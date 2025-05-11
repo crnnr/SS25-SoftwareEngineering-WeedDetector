@@ -1,0 +1,22 @@
+# Activating the Virtual Environment
+
+## Bash / Zsh
+
+```bash
+bash
+source .venv/bin/activate
+```
+
+## Fish
+
+```fish
+source .venv/bin/activate.fish
+```
+
+## Install Dependencies
+
+```bash
+pip install --upgrade pip
+
+pip install ultralytics opencv-python
+```
