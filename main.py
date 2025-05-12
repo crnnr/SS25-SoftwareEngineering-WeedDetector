@@ -5,6 +5,7 @@ from tkinter import filedialog
 import os
 import cv2
 from ultralytics import YOLO
+from model import WeedDetectorModel
 
 def camera_capture(model):
     """Function to capture an image from the camera."""
@@ -35,20 +36,8 @@ def camera_capture(model):
 
 def process_image(model, file_path):
     """Function to process the selected image."""
-    processed_image = cv2.imread(file_path)
     # Perform detection
-    results = model.predict(source=processed_image, conf=0.25)
-    for r in results:
-        for box in r.boxes:
-            x1, y1, x2, y2 = map(int, box.xyxy[0])
-            cls_id = int(box.cls[0])
-            score = box.conf[0]
-            cx, cy = (x1 + x2) // 2, (y1 + y2) // 2
-            name = model.names[cls_id]
-            cv2.rectangle(processed_image, (x1, y1), (x2, y2), (0, 255, 0), 2)
-            cv2.circle(processed_image, (cx, cy), 5, (0, 0, 255), -1)
-            cv2.putText(processed_image, f"{name} {score:.2f}", (x1, y1 - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+    processed_image = model.predict(file_path)
             
     # Display the processed image
     cv2.imshow("Processed Image", processed_image)
@@ -60,7 +49,7 @@ def select_image(model):
     """Function to select an image file."""
     file_path = filedialog.askopenfilename(
         title="Select an Image",
-        filetypes=(("Image Files", "*.jpg;*.jpeg;*.png"), ("All Files", "*.*"))
+        filetypes=(("Image Files", "*.jpg;*.jpeg;*.png"))
     )
     if file_path:
         if not (file_path.endswith('.jpg') or file_path.endswith('.jpeg') or file_path.endswith('.png')):
@@ -76,10 +65,7 @@ def main():
     root.resizable(False, False)
 
     # Load YOLO model
-    model = YOLO("yolov8n.pt")
-    if model is None:
-        messagebox.showerror("Model Error", "Failed to load the YOLO model.")
-        return
+    model = WeedDetectorModel(model_path="yolov8n.pt")
 
     # Titleframe
     title_frame = tk.Frame(root, bg="lightgray")
