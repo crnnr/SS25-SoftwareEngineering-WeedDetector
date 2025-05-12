@@ -37,7 +37,6 @@ def process_image(model, image):
     """Function to process the selected image."""
     # Perform detection
     results = model.predict(source=image, conf=0.25)
-    # Process results (this is just a placeholder)
     for r in results:
         for box in r.boxes:
             x1, y1, x2, y2 = map(int, box.xyxy[0])
@@ -68,7 +67,7 @@ def select_image():
 def main():
     root = tk.Tk()
     root.title("Weed Detector")
-    root.geometry("600x400")
+    root.geometry("800x600")
     root.configure(bg="lightgray")
     root.resizable(False, False)
 
@@ -80,12 +79,12 @@ def main():
         return
 
     # Create a frame for the title
-    title_frame = tk.Frame(root, bg="white")
+    title_frame = tk.Frame(root, bg="lightgray")
     title_frame.pack(pady=20)
     title_label = tk.Label(title_frame, text="Weed Detector", font=("Arial", 24), bg="lightgray")
     title_label.pack()
     # Create a frame for the buttons
-    button_frame = tk.Frame(root, bg="white")
+    button_frame = tk.Frame(root, bg="lightgray")
     button_frame.pack(pady=20)
     # Create a button to select an image
     select_image_button = tk.Button(button_frame, text="Select Image", font=("Arial", 16), command=select_image)
