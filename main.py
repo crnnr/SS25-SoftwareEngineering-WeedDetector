@@ -75,11 +75,11 @@ def main():
         return
 
     # Titleframe
-    title_frame = tk.Frame(root, bg="white")
+    title_frame = tk.Frame(root, bg="lightgray")
     title_frame.pack(pady=20)
     title_label = tk.Label(title_frame, text="Weed Detector", font=("Arial", 24), bg="lightgray")
     title_label.pack()
-    button_frame = tk.Frame(root, bg="white")
+    button_frame = tk.Frame(root, bg="lightgray")
     button_frame.pack(pady=20)
     # Imgaeselection
     select_image_button = tk.Button(button_frame, text="Select Image", font=("Arial", 16), command=select_image)
