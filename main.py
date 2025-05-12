@@ -33,9 +33,11 @@ def camera_capture(model):
     cap.release()
     cv2.destroyAllWindows()
 
-def process_image(model, image):
+def process_image(model, file_path):
     """Function to process the selected image."""
-    results = model.predict(source=image, conf=0.25)
+    processed_image = cv2.imread(file_path)
+    # Perform detection
+    results = model.predict(source=processed_image, conf=0.25)
     for r in results:
         for box in r.boxes:
             x1, y1, x2, y2 = map(int, box.xyxy[0])
@@ -43,13 +45,18 @@ def process_image(model, image):
             score = box.conf[0]
             cx, cy = (x1 + x2) // 2, (y1 + y2) // 2
             name = model.names[cls_id]
-            cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
-            cv2.circle(image, (cx, cy), 5, (0, 0, 255), -1)
-            cv2.putText(image, f"{name} {score:.2f}", (x1, y1 - 10),
+            cv2.rectangle(processed_image, (x1, y1), (x2, y2), (0, 255, 0), 2)
+            cv2.circle(processed_image, (cx, cy), 5, (0, 0, 255), -1)
+            cv2.putText(processed_image, f"{name} {score:.2f}", (x1, y1 - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-     
+            
+    # Display the processed image
+    cv2.imshow("Processed Image", processed_image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
-def select_image():
+
+def select_image(model):
     """Function to select an image file."""
     file_path = filedialog.askopenfilename(
         title="Select an Image",
@@ -59,12 +66,12 @@ def select_image():
         if not (file_path.endswith('.jpg') or file_path.endswith('.jpeg') or file_path.endswith('.png')):
             messagebox.showerror("Invalid File", "Please select a valid image file.")
             return
-        process_image(file_path)
+        process_image(model, file_path)
 
 def main():
     root = tk.Tk()
     root.title("Weed Detector")
-    root.geometry("600x400")
+    root.geometry("800x600")
     root.configure(bg="lightgray")
     root.resizable(False, False)
 
@@ -82,7 +89,7 @@ def main():
     button_frame = tk.Frame(root, bg="lightgray")
     button_frame.pack(pady=20)
     # Imgaeselection
-    select_image_button = tk.Button(button_frame, text="Select Image", font=("Arial", 16), command=select_image)
+    select_image_button = tk.Button(button_frame, text="Select Image", font=("Arial", 16), command=lambda: select_image(model))
     select_image_button.pack(side=tk.TOP, pady=10)
 
     #Set resolution
