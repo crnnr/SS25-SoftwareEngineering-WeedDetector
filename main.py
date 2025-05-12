@@ -99,7 +99,6 @@ def main():
     #Text for image name
     image_name_label = tk.Label(button_frame, text="Image Name:", font=("Arial", 16), bg="lightgray")
     image_name_label.pack(side=tk.TOP, pady=10)
-    image_name_entry = tk.Entry(button_frame, font=("Arial", 16))
 
     camera_capture_button = tk.Button(button_frame, text="Camera Capture", font=("Arial", 16), command=lambda: camera_capture(model))
     camera_capture_button.pack(side=tk.TOP, pady=10)
