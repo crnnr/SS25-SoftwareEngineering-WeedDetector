@@ -27,7 +27,7 @@ def camera_capture(model):
                 cv2.putText(frame, f"{name} {score:.2f}", (x1,y1-10),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,0),2)
 
-        cv2.imshow("Field Weed Detector", frame)
+        cv2.imshow("Camera Capture Weed Detector", frame)
         if cv2.waitKey(1)==27: break
 
     cap.release()
