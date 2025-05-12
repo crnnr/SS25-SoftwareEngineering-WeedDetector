@@ -1,0 +1,6 @@
+# filepath: c:\Users\friedlma\source\repos\SS25-SoftwareEngineering-WeedDetector\weed_dataset.yaml
+train: dataset/images/train
+val: dataset/images/val
+
+nc: 2 # Number of classes (e.g., weeds and non-weeds)
+names: ["weed", "non-weed"] # Class names
