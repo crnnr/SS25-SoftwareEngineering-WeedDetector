@@ -6,7 +6,7 @@ RUN apt-get update && \
     apt-get install -y libgl1-mesa-glx && \
     pip -r install /app/requirements.txt
 
-COPY *.py /app/
+COPY ./* /app/
 
 WORKDIR /app
 

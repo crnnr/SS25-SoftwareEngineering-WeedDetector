@@ -1,0 +1,15 @@
+names:
+- ACHMI
+- AGRRE
+- ALOMY
+- ARTVU
+- CHEAL
+- CIRAR
+- CONAR
+- ECHCG
+- GALAP
+- GASPA
+- LAMAL
+nc: 11
+train: /home/christof/go/github.com/SS25-SoftwareEngineering-WeedDetector/data/train
+val: /home/christof/go/github.com/SS25-SoftwareEngineering-WeedDetector/data/val

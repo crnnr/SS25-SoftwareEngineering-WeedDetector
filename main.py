@@ -65,7 +65,7 @@ def main():
     root.resizable(False, False)
 
     # Load YOLO model
-    model = WeedDetectorModel(model_path="yolov8n.pt")
+    model = WeedDetectorModel(model_path="yolov8n-cls.pt")
 
     # Titleframe
     title_frame = tk.Frame(root, bg="lightgray")
