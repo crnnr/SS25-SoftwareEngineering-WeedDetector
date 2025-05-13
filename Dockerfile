@@ -1,13 +1,15 @@
-FROM python:3.13
-
-COPY requirements.txt /app/requirements.txt
+FROM python:3.13-slim
 
 RUN apt-get update && \
-    apt-get install -y libgl1-mesa-glx
+    apt-get install -y libgl1-mesa-glx && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY ./*.py /app/
 COPY ./*.pt /app/
+COPY install.sh /app/
 
 WORKDIR /app
 
-CMD ["python", "main.py"]
+RUN chmod +x /app/install.sh
+
+ENTRYPOINT ["bash","/app/install.sh"]
