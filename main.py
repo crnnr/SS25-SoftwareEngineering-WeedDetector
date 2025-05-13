@@ -38,7 +38,7 @@ def process_image(model, file_path):
     """Function to process the selected image."""
     # Perform detection
     processed_image = model.predict(file_path)
-            
+    
     # Display the processed image
     cv2.imshow("Processed Image", processed_image)
     cv2.waitKey(0)
@@ -49,10 +49,14 @@ def select_image(model):
     """Function to select an image file."""
     file_path = filedialog.askopenfilename(
         title="Select an Image",
-        filetypes=(("Image Files", "*.jpg;*.jpeg;*.png"))
+        filetypes=(
+            ("Image Files", "*.jpg;*.jpeg;*.png")
+        )
     )
     if file_path:
-        if not (file_path.endswith('.jpg') or file_path.endswith('.jpeg') or file_path.endswith('.png')):
+        if not (
+            file_path.endswith('.jpg') or file_path.endswith('.jpeg') or file_path.endswith('.png')
+        ):
             messagebox.showerror("Invalid File", "Please select a valid image file.")
             return
         process_image(model, file_path)
@@ -75,26 +79,47 @@ def main():
     button_frame = tk.Frame(root, bg="lightgray")
     button_frame.pack(pady=20)
     # Imgaeselection
-    select_image_button = tk.Button(button_frame, text="Select Image", font=("Arial", 16), command=lambda: select_image(model))
+    select_image_button = tk.Button(
+        button_frame, text="Select Image", font=("Arial", 16), command=lambda: select_image(model)
+    )
     select_image_button.pack(side=tk.TOP, pady=10)
 
     #Set resolution
-    set_resolution_button = tk.Button(button_frame, text="Set Resolution", font=("Arial", 16), command=lambda: messagebox.showinfo("Resolution", "Set resolution functionality not implemented."))
+    set_resolution_button = tk.Button(
+        button_frame, text="Set Resolution", font=("Arial", 16),
+        command=lambda: messagebox.showinfo(
+            "Resolution", "Set resolution functionality not implemented."
+        )
+    )
     set_resolution_button.pack(side=tk.TOP, pady=10)
 
     #Text for image name
-    image_name_label = tk.Label(button_frame, text="Image Name:", font=("Arial", 16), bg="lightgray")
+    image_name_label = tk.Label(
+        button_frame, text="Image Name:", font=("Arial", 16), bg="lightgray"
+    )
     image_name_label.pack(side=tk.TOP, pady=10)
 
-    camera_capture_button = tk.Button(button_frame, text="Camera Capture", font=("Arial", 16), command=lambda: camera_capture(model))
+    camera_capture_button = tk.Button(
+        button_frame, text="Camera Capture", font=("Arial", 16),
+        command=lambda: camera_capture(model)
+    )
     camera_capture_button.pack(side=tk.TOP, pady=10)
 
     #Save the image
-    save_image_button = tk.Button(button_frame, text="Save Image", font=("Arial", 16), command=lambda: messagebox.showinfo("Save Image", "Save image functionality not implemented."))
+    save_image_button = tk.Button(
+        button_frame, text="Save Image", font=("Arial", 16),
+        command=lambda: messagebox.showinfo(
+            "Save Image", "Save image functionality not implemented."
+        )
+    )
     save_image_button.pack(side=tk.TOP, pady=10)
-    exit_button = tk.Button(button_frame, text="Exit", font=("Arial", 16), command=root.quit)
+    exit_button = tk.Button(
+        button_frame, text="Exit", font=("Arial", 16), command=root.quit
+    )
     exit_button.pack(side=tk.TOP, pady=10)
-    instructions_label = tk.Label(root, text="Select an image to process.", font=("Arial", 16), bg="lightgray")
+    instructions_label = tk.Label(
+        root, text="Select an image to process.", font=("Arial", 16), bg="lightgray"
+    )
     instructions_label.pack(pady=10)
 
 
