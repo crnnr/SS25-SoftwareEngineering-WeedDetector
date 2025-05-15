@@ -2,9 +2,7 @@
 import tkinter as tk
 import tkinter.messagebox as messagebox
 from tkinter import filedialog
-import os
 import cv2
-from ultralytics import YOLO
 from model import WeedDetectorModel
 
 def camera_capture(model):

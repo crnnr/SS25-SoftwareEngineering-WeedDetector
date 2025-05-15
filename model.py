@@ -1,9 +1,9 @@
 """Weed Detector Model using YOLOv8"""
 import cv2
-import numpy as np
 from ultralytics import YOLO
 
 class WeedDetectorModel:
+    """YOLOv8-based model for weed detection, training, evaluation, and inference."""
     def __init__(self, model_path):
         """Initialize the Weed Detector Model."""
         self.model = YOLO(model_path)

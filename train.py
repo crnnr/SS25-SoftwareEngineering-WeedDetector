@@ -1,8 +1,10 @@
+"""Script for splitting data, generating config, and training YOLOv8 classifier for weed detection."""
+
 import random
 import shutil
-import yaml
 import sys
 from pathlib import Path
+import yaml
 from ultralytics import YOLO
 
 PROJECT_ROOT = Path(__file__).parent.resolve()
@@ -59,6 +61,14 @@ if resp == "y":
         exist_ok=True
     )
     print("\nTraining complete. Check runs/classify_train/ for results.")
+    print("Deleting duplicated files in train/ and val/ directories...")
+    for d in (TRAIN_DIR, VAL_DIR):
+        for class_dir in d.iterdir():
+            if class_dir.is_dir():
+                imgs = list(class_dir.glob("*.*"))
+                for img_path in imgs:
+                    if img_path.name in imgs:
+                        img_path.unlink()
 else:
     print("Exiting without training.")
     sys.exit(0)

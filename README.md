@@ -18,9 +18,7 @@ source .venv/bin/activate.fish
 ## Install Dependencies
 
 ```bash
-pip install --upgrade pip
-
-pip install ultralytics opencv-python
+bash ./install.sh
 ```
 
 ## Docker
