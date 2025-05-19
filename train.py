@@ -1,5 +1,3 @@
-"""Script for splitting data, generating config, and training YOLOv8 classifier for weed detection."""
-
 import random
 import shutil
 import sys
@@ -25,7 +23,6 @@ for class_dir in classes:
     imgs = list(class_dir.glob("*.*"))
     random.shuffle(imgs)
     split_idx = int(0.8 * len(imgs))
-
     for i, img_path in enumerate(imgs):
         dest_root = TRAIN_DIR if i < split_idx else VAL_DIR
         out_dir    = dest_root / class_dir.name
@@ -48,7 +45,6 @@ with open(YAML_FILE, "w") as f:
 
 print(f"Generated {YAML_FILE} with classes: {class_names}\n")
 
-# ——— 5. Prompt user & run training ———
 resp = input("Start YOLOv8 classification training now? (y/n): ").strip().lower()
 if resp == "y":
     model = YOLO("yolov8n-cls.pt")

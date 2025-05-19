@@ -26,5 +26,11 @@ bash ./install.sh
 ```bash
 sudo docker build -t weed-detector .
 xhost +local:root
-sudo docker run --device /dev/video0:/dev/video0 --net=host -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix weed-detector
+sudo docker run --device /dev/video0:/dev/video0 --net=host \
+  -e DISPLAY=$DISPLAY \
+  -e QT_X11_NO_MITSHM=1 \
+  -e XDG_RUNTIME_DIR=/tmp/runtime-root \
+  -e QT_QPA_PLATFORM=xcb \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  weed-detector
 ```
