@@ -49,29 +49,37 @@ def camera_capture(model):
             cv2.waitKey(1)
 
 def process_image(model, file_path):
-    processed_image = model.predict(file_path)
-    model_name = model.model_path
-    frame_h, frame_w = processed_image.shape[:2]
-    model_text = f"Model: {model_name}"
-    text_size = cv2.getTextSize(model_text, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)[0]
-    cv2.putText(
-        processed_image,
-        model_text,
-        (frame_w - text_size[0] - 10, 30),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        0.7,
-        (0, 255, 255),
-        2
-    )
-    cv2.namedWindow("Processed Image", cv2.WINDOW_NORMAL)
-    cv2.imshow("Processed Image", processed_image)
-    while True:
-        key = cv2.waitKey(100)
-        if key == 27 or cv2.getWindowProperty("Processed Image", cv2.WND_PROP_VISIBLE) < 1:
-            break
-    cv2.destroyAllWindows()
-    for i in range(5):
-        cv2.waitKey(1)
+    print(f"Processing image from file path: {file_path}")
+    try:
+        processed_image = model.predict(file_path)
+        model_name = model.model_path
+        frame_h, frame_w = processed_image.shape[:2]
+        model_text = f"Model: {model_name}"
+        text_size = cv2.getTextSize(model_text, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)[0]
+        cv2.putText(
+            processed_image,
+            model_text,
+            (frame_w - text_size[0] - 10, 30),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.7,
+            (0, 255, 255),
+            2
+        )
+        cv2.namedWindow("Processed Image", cv2.WINDOW_NORMAL)
+        cv2.imshow("Processed Image", processed_image)
+        print("Displaying processed image")
+        while True:
+            key = cv2.waitKey(100)
+            if key == 27 or cv2.getWindowProperty("Processed Image", cv2.WND_PROP_VISIBLE) < 1:
+                break
+        cv2.destroyAllWindows()
+        for i in range(5):
+            cv2.waitKey(1)
+    except Exception as e:
+        print(f"Error in process_image: {e}")
+        import traceback
+        traceback.print_exc()
+        messagebox.showerror("Error", f"Failed to process image: {str(e)}")
 
 def show_custom_file_dialog(model):
     dialog = tk.Toplevel()
@@ -149,10 +157,38 @@ def main():
     root.geometry("800x600")
     root.configure(bg="lightgray")
     root.resizable(False, False)
-    model_path = "yolo11n.pt"
+    
+    # Check for trained models first
+    possible_trained_models = [
+        "runs/detect_train/weights/best.pt",
+        "data/weights/best.pt", 
+        "data/models/best.pt",
+        "models/best.pt",
+    ]
+    
+    model_path = "yolov8n.pt"  # Default model
+    
+    # Try to find a trained model
+    for trained_path in possible_trained_models:
+        if os.path.exists(trained_path):
+            model_path = trained_path
+            print(f"Found trained weed detection model at {trained_path}")
+            break
+    
     if not os.path.exists(model_path):
         messagebox.showerror("Model Error", f"Model file '{model_path}' not found in the container.")
         print(f"Error: Model file '{model_path}' not found.")
+        
+        # List all files and directories for debugging
+        print("Files in current directory:")
+        os.system("ls -la")
+        print("\nFiles in data directory:")
+        os.system("ls -la data/ 2>/dev/null || echo 'data/ directory not found'")
+        print("\nFiles in models directory:")
+        os.system("ls -la models/ 2>/dev/null || echo 'models/ directory not found'")
+        print("\nFiles in runs directory:")
+        os.system("ls -la runs/ 2>/dev/null || echo 'runs/ directory not found'")
+        
         root.quit()
         return
     try:

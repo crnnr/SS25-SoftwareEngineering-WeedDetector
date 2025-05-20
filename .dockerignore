@@ -1,0 +1,7 @@
+.venv/
+/data/train/labels/*.txt
+/data/train/images/*.jpg
+/data/valid/images/*.jpg
+/data/valid/labels/*.txt
+/data/valid/test/*.jpg
+/data/valid/test/*.txt

@@ -39,7 +39,12 @@ COPY ./*.py /app/
 COPY ./*.pt /app/
 COPY ./*.png /app/
 COPY ./*.jpg /app/
-COPY install.sh /app/
+
+# Copy data directory and model weights
+COPY ./data/ /app/data/
+COPY ./runs/ /app/runs/
+
+WORKDIR /app
 
 CMD ["python", "main.py"]
 

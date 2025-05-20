@@ -5,5 +5,7 @@ venv/
 .venv/
 env/
 .env/
-data/
+data/test/
+data/train/
+data/valid/
 runs/
