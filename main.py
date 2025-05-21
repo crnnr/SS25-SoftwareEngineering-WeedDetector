@@ -51,7 +51,11 @@ def camera_capture(model):
 def process_image(model, file_path):
     print(f"Processing image from file path: {file_path}")
     try:
+        if hasattr(model, 'detected_centers'):
+            model.detected_centers = []
+            
         processed_image = model.predict(file_path)
+        
         model_name = model.model_path
         frame_h, frame_w = processed_image.shape[:2]
         model_text = f"Model: {model_name}"
@@ -65,9 +69,11 @@ def process_image(model, file_path):
             (0, 255, 255),
             2
         )
+        
         cv2.namedWindow("Processed Image", cv2.WINDOW_NORMAL)
         cv2.imshow("Processed Image", processed_image)
         print("Displaying processed image")
+        
         while True:
             key = cv2.waitKey(100)
             if key == 27 or cv2.getWindowProperty("Processed Image", cv2.WND_PROP_VISIBLE) < 1:
@@ -158,7 +164,6 @@ def main():
     root.configure(bg="lightgray")
     root.resizable(False, False)
     
-    # Check for trained models first
     possible_trained_models = [
         "runs/detect_train/weights/best.pt",
         "data/weights/best.pt", 
@@ -166,9 +171,8 @@ def main():
         "models/best.pt",
     ]
     
-    model_path = "yolov8n.pt"  # Default model
+    model_path = "yolov8n.pt"
     
-    # Try to find a trained model
     for trained_path in possible_trained_models:
         if os.path.exists(trained_path):
             model_path = trained_path
@@ -179,7 +183,6 @@ def main():
         messagebox.showerror("Model Error", f"Model file '{model_path}' not found in the container.")
         print(f"Error: Model file '{model_path}' not found.")
         
-        # List all files and directories for debugging
         print("Files in current directory:")
         os.system("ls -la")
         print("\nFiles in data directory:")
@@ -218,20 +221,6 @@ def main():
         command=lambda: select_image(model)
     )
     select_image_button.pack(side=tk.TOP, pady=10, fill=tk.X)
-    set_resolution_button = tk.Button(
-        button_frame, text="Set Resolution", font=button_font,
-        width=button_width, height=button_height,
-        bg=button_bg, fg=button_fg, activebackground=button_active_bg,
-        relief=tk.RAISED, bd=3,
-        command=lambda: messagebox.showinfo(
-            "Resolution", "Set resolution functionality not implemented."
-        )
-    )
-    set_resolution_button.pack(side=tk.TOP, pady=10, fill=tk.X)
-    image_name_label = tk.Label(
-        button_frame, text="Image Name:", font=("Arial", 16), bg="lightgray"
-    )
-    image_name_label.pack(side=tk.TOP, pady=10, fill=tk.X)
     camera_capture_button = tk.Button(
         button_frame, text="Camera Capture", font=button_font,
         width=button_width, height=button_height,
@@ -240,16 +229,6 @@ def main():
         command=lambda: camera_capture(model)
     )
     camera_capture_button.pack(side=tk.TOP, pady=10, fill=tk.X)
-    save_image_button = tk.Button(
-        button_frame, text="Save Image", font=button_font,
-        width=button_width, height=button_height,
-        bg=button_bg, fg=button_fg, activebackground=button_active_bg,
-        relief=tk.RAISED, bd=3,
-        command=lambda: messagebox.showinfo(
-            "Save Image", "Save image functionality not implemented."
-        )
-    )
-    save_image_button.pack(side=tk.TOP, pady=10, fill=tk.X)
     exit_button = tk.Button(
         button_frame, text="Exit", font=button_font,
         width=button_width, height=button_height,

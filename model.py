@@ -76,16 +76,33 @@ class WeedDetectorModel:
                         conf = float(box.conf[0])
                         class_name = self.model.names[c]
                         
-                        print(f"Box: {b}, Class: {class_name}, Confidence: {conf:.2f}")
-                        
                         b[0] = max(0, b[0])
                         b[1] = max(0, b[1])
                         b[2] = min(processed_image.shape[1] - 1, b[2])
                         b[3] = min(processed_image.shape[0] - 1, b[3])
                         
+                        center_x = int((b[0] + b[2]) / 2)
+                        center_y = int((b[1] + b[3]) / 2)
+                        
+                        if not hasattr(self, 'detected_centers'):
+                            self.detected_centers = []
+                        self.detected_centers.append((center_x, center_y, class_name, conf))
+                        
+                        print(f"Box: {b}, Center: ({center_x}, {center_y}), Class: {class_name}, Confidence: {conf:.2f}")
+                        
                         cv2.rectangle(processed_image, (b[0], b[1]), (b[2], b[3]), (0, 0, 255), 2)
                         
-                        label = f"{class_name} {conf:.2f}"
+                        cross_size = 5
+                        cv2.line(processed_image, 
+                               (center_x - cross_size, center_y), 
+                               (center_x + cross_size, center_y), 
+                               (0, 0, 255), 2)
+                        cv2.line(processed_image, 
+                               (center_x, center_y - cross_size), 
+                               (center_x, center_y + cross_size), 
+                               (0, 0, 255), 2)
+                        
+                        label = f"{class_name} ({center_x},{center_y}) {conf:.2f}"
                         cv2.putText(
                             processed_image,
                             label,
@@ -116,7 +133,7 @@ class WeedDetectorModel:
             print(f"Error during prediction: {str(e)}")
             import traceback
             traceback.print_exc()
-            return image  # Return original image on error
+            return image
             
         return processed_image
 

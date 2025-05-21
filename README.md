@@ -41,6 +41,21 @@ A computer vision application to detect weeds in agricultural settings using YOL
 
 6. Restart the application to use your new model
 
+## Using Center Coordinates
+
+This application now calculates and displays the center coordinates of each detected weed:
+
+1. **Visual Output**: Each detection shows:
+   - Red bounding box around the detected weed
+   - Green dot at the center of the detection
+   - Text label showing the class, coordinates, and confidence score
+
+2. **Example Output**:
+   ```
+   Found 1 object(s):
+   1. 0 at (320, 240) with confidence 0.8562
+   ```
+
 ## Reference
 
 - YOLOv8: https://github.com/ultralytics/ultralytics

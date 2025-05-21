@@ -52,11 +52,16 @@ def test_model(model_path, image_path, conf_threshold=0.05):
                         conf = float(box.conf[0])
                         class_name = model.names[c]
                         
-                        print(f"  - {class_name}: confidence={conf:.2f}, box={b}")
+                        center_x = int((b[0] + b[2]) / 2)
+                        center_y = int((b[1] + b[3]) / 2)
+                        
+                        print(f"  - {class_name}: confidence={conf:.2f}, box={b}, center=({center_x}, {center_y})")
                         
                         cv2.rectangle(image, (b[0], b[1]), (b[2], b[3]), (0, 0, 255), 2)
                         
-                        label = f"{class_name} {conf:.2f}"
+                        cv2.circle(image, (center_x, center_y), 5, (0, 255, 0), -1)
+                        
+                        label = f"{class_name} ({center_x},{center_y}) {conf:.2f}"
                         cv2.putText(image, label, (b[0], b[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 
                                   0.5, (0, 0, 255), 2)
         
@@ -89,7 +94,6 @@ def main():
     if len(sys.argv) > 1:
         image_path = sys.argv[1]
     else:
-        # Try to find a sample image
         sample_images = ["sample.jpg", "test.jpg", "image.jpg"]
         image_path = None
         for img in sample_images:
@@ -115,10 +119,8 @@ def main():
             models_to_test.append((model_path, 0.25, "Custom trained model"))
             break
     
-    # Always test with default model
     models_to_test.append(("yolov8n.pt", 0.05, "Default YOLOv8n model"))
     
-    # Run tests
     for model_path, threshold, description in models_to_test:
         print(f"\n\n===== Testing {description} =====")
         found = test_model(model_path, image_path, threshold)
