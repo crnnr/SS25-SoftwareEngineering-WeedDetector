@@ -19,14 +19,14 @@ if resp == "y":
     model = YOLO("yolov8n.pt")
     model.train(
         data=str(DATA_YAML),
-        epochs=50,
+        epochs=100,
         imgsz=640,
         project=str(PROJECT_ROOT / "runs"),
         name="detect_train",
         exist_ok=True,
-        patience=15,  # Early stopping patience
-        batch=16,     # Batch size
-        device=0      # GPU device (0) or CPU ('cpu')
+        patience=15,
+        batch=32,
+        device=0
     )
     print("\nTraining complete. Check runs/detect_train/ for results.")
 else:

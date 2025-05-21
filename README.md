@@ -14,17 +14,6 @@ A computer vision application to detect weeds in agricultural settings using YOL
    docker run --device /dev/video0:/dev/video0 --net=host -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix weed-detector
    ```
 
-## Using the Default Model
-
-The application will use the default YOLOv8n model if no trained weed detection model is found. The default model can detect standard objects like:
-
-- Class 47: 'apple'
-- Class 50: 'broccoli'
-- Class 51: 'carrot'
-- Class 58: 'potted plant'
-
-These classes might be useful for general plant detection until you train a custom weed detector.
-
 ## Training Your Own Weed Detection Model
 
 1. Create a dataset with labeled images of weeds and crops
@@ -51,19 +40,6 @@ These classes might be useful for general plant detection until you train a cust
 5. The trained model will be saved at `runs/detect_train/weights/best.pt`
 
 6. Restart the application to use your new model
-
-## Troubleshooting
-
-If detection is not working:
-
-1. Run the find_models.py script to locate all models and data files:
-   ```
-   python find_models.py
-   ```
-
-2. Check if your trained model exists and is being found by the application
-3. Verify your data.yaml file has the correct class definitions
-4. Lower the confidence threshold in model.py if needed
 
 ## Reference
 

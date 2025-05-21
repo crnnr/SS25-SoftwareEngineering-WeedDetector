@@ -1,11 +1,10 @@
 import cv2
 import os
 from ultralytics import YOLO
-import numpy as np  # Added for debugging
+import numpy as np
 
 class WeedDetectorModel:
     def __init__(self, model_path="yolov8n.pt"):
-        # Try to use trained model if available in various possible locations
         self.model_path = model_path
         possible_trained_models = [
             "runs/detect_train/weights/best.pt",
@@ -14,7 +13,6 @@ class WeedDetectorModel:
             "models/best.pt",
         ]
         
-        # Try to find a trained model
         trained_model_found = False
         for trained_path in possible_trained_models:
             if os.path.exists(trained_path):
@@ -28,7 +26,6 @@ class WeedDetectorModel:
         
         try:
             self.model = YOLO(self.model_path)
-            # Print available class names the model can detect
             print(f"Model class names: {self.model.names}")
         except Exception as e:
             print(f"Error loading model {self.model_path}: {e}")
@@ -40,12 +37,12 @@ class WeedDetectorModel:
         if self.model is None:
             raise ValueError("Model not found or invalid model path.")
         self.model.fuse()
-        self.model.conf = 0.15  # Lower confidence threshold for better detection
-        self.model.iou = 0.45   # Set IoU threshold
+        self.model.conf = 0.15
+        self.model.iou = 0.45
         print(f"Loaded detection model: {self.model_path}")
 
     def predict(self, image):
-        image_source = image  # Store original source for debugging
+        image_source = image
         is_path = isinstance(image, str)
         
         if is_path:
@@ -54,16 +51,11 @@ class WeedDetectorModel:
             if image is None:
                 raise ValueError(f"Image not found or invalid image path: {image_source}")
         
-        # Make a copy of the image to avoid modifying the original
         processed_image = image.copy()
         
-        # Debug image dimensions
         print(f"Image shape: {processed_image.shape}")
         
         try:
-            # Use a very low confidence threshold - this helps detect more objects
-            # For the default COCO model, we're looking for classes like:
-            # 47: 'apple', 50: 'broccoli', 51: 'carrot', 58: 'potted plant'
             results = self.model.predict(image, conf=0.05, verbose=False)
             
             print(f"Detection results: {len(results)} items")
@@ -86,16 +78,13 @@ class WeedDetectorModel:
                         
                         print(f"Box: {b}, Class: {class_name}, Confidence: {conf:.2f}")
                         
-                        # Ensure coordinates are within image boundaries
                         b[0] = max(0, b[0])
                         b[1] = max(0, b[1])
                         b[2] = min(processed_image.shape[1] - 1, b[2])
                         b[3] = min(processed_image.shape[0] - 1, b[3])
                         
-                        # Draw rectangle
                         cv2.rectangle(processed_image, (b[0], b[1]), (b[2], b[3]), (0, 0, 255), 2)
                         
-                        # Draw label
                         label = f"{class_name} {conf:.2f}"
                         cv2.putText(
                             processed_image,
@@ -107,7 +96,6 @@ class WeedDetectorModel:
                             2
                         )
             
-            # Add a text overlay if no detections were found
             if not detections_found:
                 print("No detections found in this image")
                 text = "No objects detected"
