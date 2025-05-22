@@ -1,0 +1,63 @@
+\documentclass[tikz,border=5pt]{standalone}
+\usetikzlibrary{shapes, positioning, fit, arrows.meta, backgrounds}
+
+\begin{document}
+\begin{tikzpicture}[
+  component/.style={rectangle, draw, rounded corners, fill=blue!10, inner sep=6pt},
+  module/.style={rectangle, draw, fill=orange!10, inner sep=6pt},
+  external/.style={rectangle, draw, dashed, fill=gray!10, inner sep=6pt},
+  arrow/.style={-{Latex[length=3mm]}, thick},
+  >=Latex
+]
+
+% Docker Container
+\node[component, label=above:\textbf{Docker Container}] (docker) {
+  \begin{tikzpicture}[node distance=1cm and 2cm]
+
+    % Python Environment
+    \node[module] (pyenv) {Python Env};
+
+    % UI Module
+    \node[module, below=of pyenv] (ui) {GUI (main.py)};
+    % Model Wrapper
+    \node[module, right=of ui] (model) {WeedDetectorModel (model.py)};
+    % YOLO & OpenCV libs
+    \node[module, right=of model] (libs) {Ultralytics YOLO \& OpenCV};
+
+    % Data & Weights storage
+    \node[module, below=of model] (storage) {Weights \& Data};
+
+    % Training Pipeline
+    \node[module, below left=of storage] (train) {Training (train.py)};
+    % Testing Pipeline
+    \node[module, below right=of storage] (test) {Testing (test\_model.py)};
+
+    % Background box
+    \begin{scope}[on background layer]
+      \node[draw, dashed, inner sep=4pt, fit=(pyenv) (ui) (model) (libs) (storage) (train) (test)] {};
+    \end{scope}
+
+    % Arrows
+    \draw[arrow] (ui) -- node[midway, above] {calls} (model);
+    \draw[arrow] (model) -- node[midway, above] {uses} (libs);
+    \draw[arrow] (model) -- node[midway, right] {loads/saves} (storage);
+    \draw[arrow] (train) -- node[midway, above] {writes} (storage);
+    \draw[arrow] (test) -- node[midway, above] {reads} (storage);
+    \draw[arrow] (train.north) .. controls +(up:1cm) and +(left:1cm) .. (model.west);
+    \draw[arrow] (test.north) .. controls +(up:1cm) and +(right:1cm) .. (model.east);
+
+  \end{tikzpicture}
+};
+
+% External Interfaces
+\node[external, left=2cm of docker] (camera) {Camera};
+\node[external, below=of camera] (fs) {File System};
+\node[external, right=2cm of docker] (display) {Display / User};
+
+% Interface arrows
+\draw[arrow] (camera.east) -- (docker.west) node[midway, above] {video frames};
+\draw[arrow] (fs.east) -- (docker.west) node[midway, above] {images, weights};
+\draw[arrow] (docker.east) -- (display.west) node[midway, above] {rendered GUI};
+
+\end{tikzpicture}
+\end{document}
