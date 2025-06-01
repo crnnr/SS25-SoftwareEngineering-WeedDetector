@@ -1,168 +1,377 @@
 import tkinter as tk
 import tkinter.messagebox as messagebox
-from tkinter import filedialog
+from tkinter import filedialog, ttk
+from PIL import Image, ImageTk
 import cv2
 import os
+import threading
+import numpy as np
 from model import WeedDetectorModel
 
-def camera_capture(model):
-    cap = cv2.VideoCapture(0)
-    if not cap.isOpened():
-        messagebox.showerror("Camera Error", "Could not open camera. Check if camera is connected and accessible.")
-        return
-    cv2.namedWindow("Camera Capture Weed Detector", cv2.WINDOW_NORMAL)
-    model_name = model.model_path
-    try:
-        while True:
-            ret, frame = cap.read()
-            if not ret:
-                break
-            try:
-                processed_frame = model.predict(frame)
-                frame_h, frame_w = processed_frame.shape[:2]
-                model_text = f"Model: {model_name}"
-                text_size = cv2.getTextSize(model_text, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)[0]
-                cv2.putText(
-                    processed_frame,
-                    model_text,
-                    (frame_w - text_size[0] - 10, 30),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    0.7,
-                    (0, 255, 255),
-                    2
-                )
-                cv2.imshow("Camera Capture Weed Detector", processed_frame)
-                key = cv2.waitKey(1)
-                if key == 27 or cv2.getWindowProperty("Camera Capture Weed Detector", cv2.WND_PROP_VISIBLE) < 1:
-                    break
-            except Exception as e:
-                print(f"Error processing frame: {e}")
-                cv2.imshow("Camera Capture Weed Detector", frame)
-                if cv2.waitKey(1) == 27:
-                    break
-    except Exception as e:
-        messagebox.showerror("Error", f"An error occurred: {str(e)}")
-    finally:
-        cap.release()
-        cv2.destroyAllWindows()
-        for i in range(5):
-            cv2.waitKey(1)
-
-def process_image(model, file_path):
-    print(f"Processing image from file path: {file_path}")
-    try:
-        if hasattr(model, 'detected_centers'):
-            model.detected_centers = []
-            
-        processed_image = model.predict(file_path)
+class WeedDetectorGUI:
+    def __init__(self, root, model):
+        self.root = root
+        self.model = model
+        self.camera_running = False
+        self.camera_thread = None
+        self.cap = None
         
-        model_name = model.model_path
-        frame_h, frame_w = processed_image.shape[:2]
-        model_text = f"Model: {model_name}"
-        text_size = cv2.getTextSize(model_text, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)[0]
-        cv2.putText(
-            processed_image,
-            model_text,
-            (frame_w - text_size[0] - 10, 30),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.7,
-            (0, 255, 255),
-            2
+        self.root.title("Weed Detector")
+        self.root.geometry("1200x800")
+        self.root.configure(bg="#2c3e50")
+        self.root.resizable(True, True)
+        
+        # Create main layout
+        self.create_layout()
+        
+    def create_layout(self):
+        # Header frame
+        header_frame = tk.Frame(self.root, bg="#34495e", height=80)
+        header_frame.pack(fill="x", padx=10, pady=5)
+        header_frame.pack_propagate(False)
+        
+        title_label = tk.Label(
+            header_frame, 
+            text="Weed Detection System", 
+            font=("Arial", 24, "bold"),
+            bg="#34495e", 
+            fg="#ecf0f1"
+        )
+        title_label.pack(pady=20)
+        
+        # Main content frame
+        content_frame = tk.Frame(self.root, bg="#2c3e50")
+        content_frame.pack(fill="both", expand=True, padx=10, pady=5)
+        
+        # Left panel - Controls
+        self.create_control_panel(content_frame)
+        
+        # Right panel - Image display
+        self.create_display_panel(content_frame)
+        
+        # Bottom panel - Status and results
+        self.create_status_panel()
+        
+    def create_control_panel(self, parent):
+        control_frame = tk.Frame(parent, bg="#34495e", width=300)
+        control_frame.pack(side="left", fill="y", padx=(0, 10))
+        control_frame.pack_propagate(False)
+        
+        # Control panel title
+        control_title = tk.Label(
+            control_frame,
+            text="Controls",
+            font=("Arial", 18, "bold"),
+            bg="#34495e",
+            fg="#ecf0f1"
+        )
+        control_title.pack(pady=20)
+        
+        # Image selection button
+        self.select_btn = tk.Button(
+            control_frame,
+            text="Select Image",
+            font=("Arial", 12, "bold"),
+            bg="#3498db",
+            fg="white",
+            activebackground="#2980b9",
+            relief=tk.RAISED,
+            bd=3,
+            height=2,
+            command=self.select_image
+        )
+        self.select_btn.pack(fill="x", padx=20, pady=10)
+        
+        # Camera button
+        self.camera_btn = tk.Button(
+            control_frame,
+            text="Start Camera",
+            font=("Arial", 12, "bold"),
+            bg="#27ae60",
+            fg="white",
+            activebackground="#229954",
+            relief=tk.RAISED,
+            bd=3,
+            height=2,
+            command=self.toggle_camera
+        )
+        self.camera_btn.pack(fill="x", padx=20, pady=10)
+        
+        # Model info frame
+        model_frame = tk.LabelFrame(
+            control_frame,
+            text="Model Information",
+            font=("Arial", 10, "bold"),
+            bg="#34495e",
+            fg="#ecf0f1",
+            relief=tk.RAISED,
+            bd=2
+        )
+        model_frame.pack(fill="x", padx=20, pady=20)
+        
+        model_path = os.path.basename(self.model.model_path)
+        model_info = tk.Label(
+            model_frame,
+            text=f"Model: {model_path}",
+            font=("Arial", 9),
+            bg="#34495e",
+            fg="#bdc3c7",
+            wraplength=250
+        )
+        model_info.pack(padx=10, pady=10)
+        
+        settings_frame = tk.LabelFrame(
+            control_frame,
+            text="Detection Settings",
+            font=("Arial", 10, "bold"),
+            bg="#34495e",
+            fg="#ecf0f1",
+            relief=tk.RAISED,
+            bd=2
+        )
+        settings_frame.pack(fill="x", padx=20, pady=10)
+        
+        tk.Label(settings_frame, text="Confidence:", bg="#34495e", fg="#bdc3c7").pack(anchor="w", padx=10)
+        self.conf_var = tk.DoubleVar(value=0.15)
+        conf_scale = tk.Scale(
+            settings_frame,
+            from_=0.05,
+            to=0.95,
+            resolution=0.05,
+            orient="horizontal",
+            variable=self.conf_var,
+            bg="#34495e",
+            fg="#ecf0f1",
+            highlightbackground="#34495e"
+        )
+        conf_scale.pack(fill="x", padx=10, pady=5)
+        
+    def create_display_panel(self, parent):
+        display_frame = tk.Frame(parent, bg="#34495e")
+        display_frame.pack(side="right", fill="both", expand=True)
+        
+        display_title = tk.Label(
+            display_frame,
+            text="Image Display",
+            font=("Arial", 18, "bold"),
+            bg="#34495e",
+            fg="#ecf0f1"
+        )
+        display_title.pack(pady=10)
+        
+        canvas_frame = tk.Frame(display_frame, bg="#2c3e50", relief=tk.SUNKEN, bd=3)
+        canvas_frame.pack(fill="both", expand=True, padx=20, pady=10)
+        
+        self.canvas = tk.Canvas(canvas_frame, bg="#2c3e50", highlightthickness=0)
+        v_scrollbar = ttk.Scrollbar(canvas_frame, orient="vertical", command=self.canvas.yview)
+        h_scrollbar = ttk.Scrollbar(canvas_frame, orient="horizontal", command=self.canvas.xview)
+        
+        self.canvas.configure(yscrollcommand=v_scrollbar.set, xscrollcommand=h_scrollbar.set)
+        
+        v_scrollbar.pack(side="right", fill="y")
+        h_scrollbar.pack(side="bottom", fill="x")
+        self.canvas.pack(side="left", fill="both", expand=True)
+        
+        self.canvas.create_text(
+            400, 300,
+            text="Select an image or start camera to begin detection",
+            font=("Arial", 16),
+            fill="#7f8c8d",
+            tags="placeholder"
         )
         
-        cv2.namedWindow("Processed Image", cv2.WINDOW_NORMAL)
-        cv2.imshow("Processed Image", processed_image)
-        print("Displaying processed image")
+    def create_status_panel(self):
+        status_frame = tk.Frame(self.root, bg="#34495e", height=120)
+        status_frame.pack(fill="x", padx=10, pady=5)
+        status_frame.pack_propagate(False)
         
-        while True:
-            key = cv2.waitKey(100)
-            if key == 27 or cv2.getWindowProperty("Processed Image", cv2.WND_PROP_VISIBLE) < 1:
-                break
-        cv2.destroyAllWindows()
-        for i in range(5):
-            cv2.waitKey(1)
-    except Exception as e:
-        print(f"Error in process_image: {e}")
-        import traceback
-        traceback.print_exc()
-        messagebox.showerror("Error", f"Failed to process image: {str(e)}")
-
-def show_custom_file_dialog(model):
-    dialog = tk.Toplevel()
-    dialog.title("Enter Image Path")
-    dialog.geometry("600x150")
-    dialog.configure(bg="lightgray")
-    dialog.transient()
-    dialog.grab_set()
-    path_frame = tk.Frame(dialog, bg="lightgray")
-    path_frame.pack(fill="x", padx=20, pady=20)
-    path_label = tk.Label(path_frame, text="Image path:", bg="lightgray")
-    path_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-    path_entry = tk.Entry(path_frame, width=50)
-    path_entry.grid(row=0, column=1, padx=5, pady=5)
-    path_entry.insert(0, "/app/sample.jpg")
-    button_frame = tk.Frame(dialog, bg="lightgray")
-    button_frame.pack(fill="x", padx=20, pady=10)
-    def on_process():
-        file_path = path_entry.get().strip()
-        dialog.destroy()
-        if not file_path:
-            messagebox.showerror("Error", "No file path provided")
-            return
-        if not (file_path.lower().endswith('.jpg') or \
-                file_path.lower().endswith('.jpeg') or \
-                file_path.lower().endswith('.png')):
-            messagebox.showerror("Invalid File", "Please enter a valid image file path (jpg, jpeg, png)")
-            return
-        try:
-            process_image(model, file_path)
-        except Exception as e:
-            messagebox.showerror("Error", f"Failed to process image: {str(e)}")
-            print(f"Error processing image: {e}")
-    process_btn = tk.Button(
-        button_frame, text="Process Image", 
-        bg="#4CAF50", fg="white", 
-        command=on_process
-    )
-    process_btn.pack(side="left", padx=5)
-    cancel_btn = tk.Button(
-        button_frame, text="Cancel", 
-        bg="#F44336", fg="white", 
-        command=dialog.destroy
-    )
-    cancel_btn.pack(side="right", padx=5)
-    dialog.wait_window()
-
-def select_image(model):
-    try:
+        status_title = tk.Label(
+            status_frame,
+            text="Detection Results",
+            font=("Arial", 14, "bold"),
+            bg="#34495e",
+            fg="#ecf0f1"
+        )
+        status_title.pack(anchor="w", padx=10, pady=5)
+        
+        results_frame = tk.Frame(status_frame, bg="#34495e")
+        results_frame.pack(fill="both", expand=True, padx=10, pady=(0, 10))
+        
+        self.results_text = tk.Text(
+            results_frame,
+            height=4,
+            bg="#2c3e50",
+            fg="#ecf0f1",
+            font=("Consolas", 10),
+            relief=tk.SUNKEN,
+            bd=2,
+            state=tk.DISABLED
+        )
+        results_scrollbar = ttk.Scrollbar(results_frame, orient="vertical", command=self.results_text.yview)
+        self.results_text.configure(yscrollcommand=results_scrollbar.set)
+        
+        self.results_text.pack(side="left", fill="both", expand=True)
+        results_scrollbar.pack(side="right", fill="y")
+        
+    def update_results(self, message):
+        self.results_text.config(state=tk.NORMAL)
+        self.results_text.insert(tk.END, message + "\n")
+        self.results_text.see(tk.END)
+        self.results_text.config(state=tk.DISABLED)
+        
+    def clear_results(self):
+        self.results_text.config(state=tk.NORMAL)
+        self.results_text.delete(1.0, tk.END)
+        self.results_text.config(state=tk.DISABLED)
+        
+    def display_image(self, cv_image):
+        if len(cv_image.shape) == 3:
+            rgb_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
+        else:
+            rgb_image = cv_image
+            
+        pil_image = Image.fromarray(rgb_image)
+        
+        canvas_width = self.canvas.winfo_width()
+        canvas_height = self.canvas.winfo_height()
+        
+        if canvas_width <= 1 or canvas_height <= 1:
+            canvas_width, canvas_height = 800, 600
+            
+        img_width, img_height = pil_image.size
+        
+        scale_x = canvas_width / img_width
+        scale_y = canvas_height / img_height
+        scale = min(scale_x, scale_y, 1.0)  # Don't upscale
+        
+        new_width = int(img_width * scale)
+        new_height = int(img_height * scale)
+        
+        display_image = pil_image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+        
+        self.photo = ImageTk.PhotoImage(display_image)
+        
+        self.canvas.delete("all")
+        self.canvas.configure(scrollregion=(0, 0, new_width, new_height))
+        self.canvas.create_image(new_width//2, new_height//2, image=self.photo)
+        
+    def select_image(self):
         file_path = filedialog.askopenfilename(
             title="Select an Image",
             filetypes=[
-                ("JPEG files", "*.jpg"),
-                ("JPEG files", "*.jpeg"), 
+                ("Image files", "*.jpg *.jpeg *.png *.bmp *.tiff"),
+                ("JPEG files", "*.jpg *.jpeg"),
                 ("PNG files", "*.png"),
                 ("All files", "*.*")
             ]
         )
+        
         if file_path:
-            if not (
-                file_path.lower().endswith('.jpg') or 
-                file_path.lower().endswith('.jpeg') or 
-                file_path.lower().endswith('.png')
-            ):
-                messagebox.showerror("Invalid File", "Please select a valid image file.")
+            self.process_image(file_path)
+            
+    def process_image(self, file_path):
+        try:
+            self.clear_results()
+            self.update_results(f"Processing: {os.path.basename(file_path)}")
+            
+            self.model.model.conf = self.conf_var.get()
+            
+            if hasattr(self.model, 'detected_centers'):
+                self.model.detected_centers = []
+                
+            processed_image = self.model.predict(file_path)
+            
+            # Display processed image
+            self.display_image(processed_image)
+            
+            if hasattr(self.model, 'detected_centers') and self.model.detected_centers:
+                self.update_results(f"Found {len(self.model.detected_centers)} object(s):")
+                for i, (x, y, class_name, conf) in enumerate(self.model.detected_centers):
+                    self.update_results(f"  {i+1}. {class_name} at ({x}, {y}) confidence: {conf:.3f}")
+            else:
+                self.update_results("No objects detected")
+                
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to process image: {str(e)}")
+            self.update_results(f"Error: {str(e)}")
+            
+    def toggle_camera(self):
+        if not self.camera_running:
+            self.start_camera()
+        else:
+            self.stop_camera()
+            
+    def start_camera(self):
+        try:
+            self.cap = cv2.VideoCapture(0)
+            if not self.cap.isOpened():
+                messagebox.showerror("Camera Error", "Could not open camera.")
                 return
-            process_image(model, file_path)
-    except Exception as e:
-        print(f"Standard file dialog failed: {e}. Using custom dialog instead.")
-        show_custom_file_dialog(model)
+                
+            self.camera_running = True
+            self.camera_btn.config(text="⏹ Stop Camera", bg="#e74c3c")
+            self.select_btn.config(state=tk.DISABLED)
+            
+            self.clear_results()
+            self.update_results("Camera started - Real-time detection active")
+            
+            self.camera_thread = threading.Thread(target=self.camera_loop, daemon=True)
+            self.camera_thread.start()
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to start camera: {str(e)}")
+            
+    def stop_camera(self):
+        self.camera_running = False
+        if self.cap:
+            self.cap.release()
+            
+        self.camera_btn.config(text="📷 Start Camera", bg="#27ae60")
+        self.select_btn.config(state=tk.NORMAL)
+        self.update_results("Camera stopped")
+        
+    def camera_loop(self):
+        while self.camera_running:
+            if self.cap is None:
+                break
+                
+            ret, frame = self.cap.read()
+            if not ret:
+                break
+                
+            try:
+                self.model.model.conf = self.conf_var.get()
+                
+                if hasattr(self.model, 'detected_centers'):
+                    self.model.detected_centers = []
+                    
+                processed_frame = self.model.predict(frame)
+                
+                self.root.after(0, self.display_image, processed_frame)
+                
+                if hasattr(self.model, 'detected_centers') and self.model.detected_centers:
+                    result_msg = f"Live: {len(self.model.detected_centers)} object(s) detected"
+                    self.root.after(0, self.update_live_results, result_msg)
+                    
+            except Exception as e:
+                print(f"Error processing frame: {e}")
+                
+        if self.cap:
+            self.cap.release()
+            
+    def update_live_results(self, message):
+        if self.camera_running:
+            self.results_text.config(state=tk.NORMAL)
+            lines = self.results_text.get(1.0, tk.END).strip().split('\n')
+            if lines and 'Camera started' in lines[0]:
+                self.results_text.delete(1.0, tk.END)
+                self.results_text.insert(tk.END, lines[0] + "\n")
+            self.results_text.insert(tk.END, message + "\n")
+            self.results_text.see(tk.END)
+            self.results_text.config(state=tk.DISABLED)
 
 def main():
     root = tk.Tk()
-    root.title("Weed Detector")
-    root.geometry("800x600")
-    root.configure(bg="lightgray")
-    root.resizable(False, False)
     
     possible_trained_models = [
         "runs/detect_train/weights/best.pt",
@@ -176,7 +385,6 @@ def main():
     for trained_path in possible_trained_models:
         if os.path.exists(trained_path):
             model_path = trained_path
-            print(f"Found trained weed detection model at {trained_path}")
             break
     
     if not os.path.exists(model_path):
@@ -201,42 +409,10 @@ def main():
         print(f"Error loading model: {e}")
         root.quit()
         return
-    title_frame = tk.Frame(root, bg="lightgray")
-    title_frame.pack(pady=20)
-    title_label = tk.Label(title_frame, text="Weed Detector", font=("Arial", 24), bg="lightgray")
-    title_label.pack()
-    button_frame = tk.Frame(root, bg="lightgray")
-    button_frame.pack(pady=20)
-    button_width = 20
-    button_height = 2
-    button_font = ("Arial", 16, "bold")
-    button_bg = "#4CAF50"
-    button_fg = "white"
-    button_active_bg = "#388E3C"
-    select_image_button = tk.Button(
-        button_frame, text="Select Image", font=button_font,
-        width=button_width, height=button_height,
-        bg=button_bg, fg=button_fg, activebackground=button_active_bg,
-        relief=tk.RAISED, bd=3,
-        command=lambda: select_image(model)
-    )
-    select_image_button.pack(side=tk.TOP, pady=10, fill=tk.X)
-    camera_capture_button = tk.Button(
-        button_frame, text="Camera Capture", font=button_font,
-        width=button_width, height=button_height,
-        bg=button_bg, fg=button_fg, activebackground=button_active_bg,
-        relief=tk.RAISED, bd=3,
-        command=lambda: camera_capture(model)
-    )
-    camera_capture_button.pack(side=tk.TOP, pady=10, fill=tk.X)
-    exit_button = tk.Button(
-        button_frame, text="Exit", font=button_font,
-        width=button_width, height=button_height,
-        bg="#F44336", fg="white", activebackground="#B71C1C",
-        relief=tk.RAISED, bd=3,
-        command=root.quit
-    )
-    exit_button.pack(side=tk.TOP, pady=10, fill=tk.X)
+    
+    # Create the modern GUI
+    app = WeedDetectorGUI(root, model)
+    
     root.mainloop()
 
 if __name__ == "__main__":

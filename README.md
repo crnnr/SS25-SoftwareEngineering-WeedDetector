@@ -22,12 +22,12 @@ A computer vision application to detect weeds in agricultural settings using YOL
    data/
    ├── images/
    │   ├── train/
-   │   │   └── images/  # Training images
+   │   │   └── images/
    │   └── val/
-   │       └── images/  # Validation images
+   │       └── images/
    └── labels/
-       ├── train/  # Training labels (YOLO format)
-       └── val/    # Validation labels (YOLO format)
+       ├── train/
+       └── val/
    ```
 
 3. Copy the template file `data/data.yaml.template` to `data/data.yaml` and customize it for your dataset

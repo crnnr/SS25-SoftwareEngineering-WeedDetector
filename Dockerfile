@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1.4
-
 FROM python:3.10-slim AS builder
 
 WORKDIR /wheels
@@ -40,7 +38,6 @@ COPY ./*.pt /app/
 COPY ./*.png /app/
 COPY ./*.jpg /app/
 
-# Copy data directory and model weights
 COPY ./data/ /app/data/
 COPY ./runs/ /app/runs/
 
