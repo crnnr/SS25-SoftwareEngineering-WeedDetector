@@ -3,20 +3,22 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from PIL import Image, ImageTk
 import cv2
+import threading
 import os
 
 class WeedDetectorGUI:
-    def __init__(self, root, model):
-        self.root = root
-        self.model = model
-        self.camera_running = False
-        self.camera_thread = None
+    def __init__(self):
+        """Initialize the Weed Detector GUI."""
+        self.root = tk.Tk()
         self.cap = None
         
         self.root.title("Weed Detector")
         self.root.geometry("1200x800")
         self.root.configure(bg="#2c3e50")
         self.root.resizable(True, True)
+
+        self.on_select_image = None # Callback for image selection
+        self.on_detect = None # Callback for detection
         
         # Create main layout
         self.create_layout()
@@ -271,35 +273,13 @@ class WeedDetectorGUI:
             ]
         )
         
-        if file_path:
-            self.process_image(file_path)
-            
+        if file_path and self.on_select_image:
+            self.on_select_image(file_path)
+
     def process_image(self, file_path):
         """Process the selected image using the model."""
-        try:
-            self.clear_results()
-            self.update_results(f"Processing: {os.path.basename(file_path)}")
-            
-            self.model.model.conf = self.conf_var.get()
-            
-            if hasattr(self.model, 'detected_centers'):
-                self.model.detected_centers = []
-                
-            processed_image = self.model.predict(file_path)
-            
-            # Display processed image
-            self.display_image(processed_image)
-            
-            if hasattr(self.model, 'detected_centers') and self.model.detected_centers:
-                self.update_results(f"Found {len(self.model.detected_centers)} object(s):")
-                for i, (x, y, class_name, conf) in enumerate(self.model.detected_centers):
-                    self.update_results(f"  {i+1}. {class_name} at ({x}, {y}) confidence: {conf:.3f}")
-            else:
-                self.update_results("No objects detected")
-                
-        except Exception as e:
-            messagebox.showerror("Error", f"Failed to process image: {str(e)}")
-            self.update_results(f"Error: {str(e)}")
+        if self.on_detect:
+            self.on_detect(file_path)
             
     def toggle_camera(self):
         """Toggle the camera on or off."""
@@ -380,3 +360,12 @@ class WeedDetectorGUI:
             self.results_text.insert(tk.END, message + "\n")
             self.results_text.see(tk.END)
             self.results_text.config(state=tk.DISABLED)
+
+    def show_error_box(self, message):
+        """Show an error message box."""
+        messagebox.showerror("Error", message)
+        self.update_results(f"Error: {message}")
+
+    def run(self):
+        """Run the main loop of the GUI."""
+        self.root.mainloop()

@@ -41,6 +41,29 @@ class WeedDetectorModel:
         self.model.iou = 0.45
         print(f"Loaded detection model: {self.model_path}")
 
+    def load_image(self, image_path):
+        """Loads an image from the given path."""
+        image = cv2.imread(image_path)
+        if image is None:
+            raise ValueError(f"Image not found or invalid image path: {image_path}")
+        return image
+    
+    def detect_weeds(self, image):
+        """Detects weeds in the given image using the YOLO model."""
+        processed_image = self.predict(image)
+        result_text = self._format_detection_results()
+        return processed_image, result_text
+    
+    def _format_detection_results(self):
+        """Formats the detection results into a readable string."""
+        if not hasattr(self, 'detected_centers') or not self.detected_centers:
+            return "No weeds detected"
+        
+        lines = []
+        for i, (x, y, class_name, conf) in enumerate(self.detected_centers, 1):
+            lines.append(f"{i}. {class_name} at ({x},{y}) - Confidence: {conf:.2f}")
+        return "\n".join(lines)
+
     def predict(self, image):
         image_source = image
         is_path = isinstance(image, str)
