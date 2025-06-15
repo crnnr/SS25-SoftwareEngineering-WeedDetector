@@ -9,7 +9,7 @@ def main():
     model = WeedDetectorModel()
 
     # Initialize the GUI with the model
-    gui = WeedDetectorGUI(model)
+    gui = WeedDetectorGUI()
 
     # Create the controller to handle interactions between model and GUI
     controller = WeedDetectorController(model, gui)

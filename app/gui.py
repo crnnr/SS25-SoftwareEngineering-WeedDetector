@@ -13,12 +13,9 @@ class WeedDetectorGUI:
         self.cap = None
         
         self.root.title("Weed Detector")
-        self.root.geometry("1200x800")
+        self.root.geometry("1200x900")
         self.root.configure(bg="#2c3e50")
         self.root.resizable(True, True)
-
-        self.on_select_image = None # Callback for image selection
-        self.on_detect = None # Callback for detection
         
         # Create main layout
         self.create_layout()
@@ -51,12 +48,22 @@ class WeedDetectorGUI:
         
         # Bottom panel - Status and results
         self.create_status_panel()
+
+        # Create robot status panel
+        self.create_robot_status_panel()
         
     def create_control_panel(self, parent):
         """Create the control panel for image selection and camera controls."""
         control_frame = tk.Frame(parent, bg="#34495e", width=300)
         control_frame.pack(side="left", fill="y", padx=(0, 10))
         control_frame.pack_propagate(False)
+        self.camera_running = False
+
+        self.on_select_image = None # Callback for image selection
+        self.on_detect = None # Callback for detection
+        self.on_start_robot = None  # Callback for robot start
+
+        self.model_info_var = tk.StringVar(value="Model: Not loaded")
         
         # Control panel title
         control_title = tk.Label(
@@ -97,6 +104,21 @@ class WeedDetectorGUI:
             command=self.toggle_camera
         )
         self.camera_btn.pack(fill="x", padx=20, pady=10)
+
+        # Robot control button
+        self.robot_btn = tk.Button(
+            control_frame,
+            text="Start Robot",
+            font=("Arial", 12, "bold"),
+            bg="red",
+            fg="white",
+            activebackground="#e67e22",
+            relief=tk.RAISED,
+            bd=3,
+            height=2,
+            command=self.start_robot
+        )
+        self.robot_btn.pack(fill="x", padx=20, pady=10)
         
         # Model info frame
         model_frame = tk.LabelFrame(
@@ -110,10 +132,10 @@ class WeedDetectorGUI:
         )
         model_frame.pack(fill="x", padx=20, pady=20)
         
-        model_path = os.path.basename(self.model.model_path)
+        self.model_info_var = tk.StringVar(value="Model: Not loaded")
         model_info = tk.Label(
             model_frame,
-            text=f"Model: {model_path}",
+            textvariable=self.model_info_var,
             font=("Arial", 9),
             bg="#34495e",
             fg="#bdc3c7",
@@ -185,7 +207,7 @@ class WeedDetectorGUI:
     def create_status_panel(self):
         """Create the status panel for displaying detection results."""
         status_frame = tk.Frame(self.root, bg="#34495e", height=120)
-        status_frame.pack(fill="x", padx=10, pady=5)
+        status_frame.pack(fill="x", padx=10, pady=(0, 10))
         status_frame.pack_propagate(False)
         
         status_title = tk.Label(
@@ -215,6 +237,40 @@ class WeedDetectorGUI:
         
         self.results_text.pack(side="left", fill="both", expand=True)
         results_scrollbar.pack(side="right", fill="y")
+
+    def create_robot_status_panel(self):
+        """Create the panel for displaying robot actions."""
+        robot_status_frame = tk.Frame(self.root, bg="#34495e", height=120)
+        robot_status_frame.pack(fill="x", padx=10, pady=(0, 10))
+        robot_status_frame.pack_propagate(False)
+
+        robot_status_title = tk.Label(
+            robot_status_frame,
+            text="Robot Actions",
+            font=("Arial", 14, "bold"),
+            bg="#34495e",
+            fg="#ecf0f1"
+        )
+        robot_status_title.pack(anchor="w", padx=10, pady=5)
+
+        robot_results_frame = tk.Frame(robot_status_frame, bg="#34495e")
+        robot_results_frame.pack(fill="both", expand=True, padx=10, pady=(0, 10))
+
+        self.robot_actions_text = tk.Text(
+            robot_results_frame,
+            height=4,
+            bg="#2c3e50",
+            fg="#ecf0f1",
+            font=("Consolas", 10),
+            relief=tk.SUNKEN,
+            bd=2,
+            state=tk.DISABLED
+        )
+        robot_status_scrollbar = ttk.Scrollbar(robot_results_frame, orient="vertical", command=self.results_text.yview)
+        self.robot_actions_text.configure(yscrollcommand=robot_status_scrollbar.set)
+        
+        self.robot_actions_text.pack(side="left", fill="both", expand=True)
+        robot_status_scrollbar.pack(side="right", fill="y")
         
     def update_results(self, message):
         """Update the results text area with a new message."""
@@ -348,6 +404,30 @@ class WeedDetectorGUI:
                 
         if self.cap:
             self.cap.release()
+
+    def start_robot(self):
+        """Start the robot in demo mode."""
+        if hasattr(self, "on_start_robot") and callable(self.on_start_robot):
+            self.on_start_robot()
+            self.robot_btn.config(text="Stop Robot", bg="#e74c3c", command=self.stop_robot)
+        else:
+            self.log_robot_action("Robot started (Demo-Modus)")
+            self.robot_btn.config(text="Stop Robot", bg="#e74c3c", command=self.stop_robot)
+    
+    def stop_robot(self):
+        if hasattr(self, "on_stop_robot") and callable(self.on_stop_robot):
+            self.on_stop_robot()
+            self.robot_btn.config(text="Start Robot", bg="#f39c12", command=self.start_robot)
+        else:
+            self.log_robot_action("Robot stopped (Demo-Modus)")
+            self.robot_btn.config(text="Start Robot", bg="#f39c12", command=self.start_robot)
+
+    def log_robot_action(self, message):
+        """Append a robot action to the robot actions panel."""
+        self.robot_actions_text.config(state=tk.NORMAL)
+        self.robot_actions_text.insert(tk.END, message + "\n")
+        self.robot_actions_text.see(tk.END)
+        self.robot_actions_text.config(state=tk.DISABLED)
             
     def update_live_results(self, message):
         """Update the results text area with live detection results."""
