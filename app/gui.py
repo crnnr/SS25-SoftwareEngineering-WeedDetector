@@ -62,6 +62,7 @@ class WeedDetectorGUI:
         self.on_select_image = None # Callback for image selection
         self.on_detect = None # Callback for detection
         self.on_start_robot = None  # Callback for robot start
+        self.on_stop_robot = None  # Callback for robot stop
 
         self.model_info_var = tk.StringVar(value="Model: Not loaded")
         
