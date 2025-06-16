@@ -24,7 +24,8 @@ class Robot:
     def stop_robot(self):
         """Stop the robot."""
         self.is_running = False
-        if self.thread and self.thread.is_alive():
+        # Nur joinen, wenn wir NICHT im Robot-Thread sind
+        if self.thread and self.thread.is_alive() and threading.current_thread() != self.thread:
             self.thread.join()
         self.gui.toggle_camera()
         self.gui.log_robot_action("Robot stopped")
