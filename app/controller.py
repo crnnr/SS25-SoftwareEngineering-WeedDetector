@@ -9,6 +9,9 @@ class WeedDetectorController:
         self.gui = gui
         self.robot = Robot(gui, model)
 
+        # Pass model reference to GUI for confidence updates
+        self.gui.model = model
+
         model_name = os.path.basename(model.model_path)
         gui.model_info_var.set(f"Model: {model_name}")
 
@@ -35,6 +38,10 @@ class WeedDetectorController:
     def handle_detect(self, file_path):
         """ will be called when the user clicks the detect button."""
         try:
+            # Update model confidence from GUI slider
+            confidence = self.gui.conf_var.get()
+            self.model.model.conf = confidence
+            
             image = self.model.load_image(file_path)
             # Perform detection using the model
             processed_image, result = self.model.detect_weeds(image)
@@ -42,7 +49,7 @@ class WeedDetectorController:
             if processed_image is None:
                 raise ValueError("Processed image is None, detection failed.")
             self.gui.display_image(processed_image)
-            self.gui.update_results(result)
+            self.gui.update_results(f"Detection with confidence {confidence}: {result}")
         except Exception as e:
             self.gui.show_error_box(f"Fehler bei der Erkennung: {e}")
 

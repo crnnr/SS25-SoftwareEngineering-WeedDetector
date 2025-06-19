@@ -77,12 +77,17 @@ class WeedDetectorModel:
         processed_image = image.copy()
         
         print(f"Image shape: {processed_image.shape}")
+        print(f"Using confidence threshold: {self.model.conf}")
         
         try:
-            results = self.model.predict(image, conf=0.05, verbose=False)
+            # Use the model's current confidence setting
+            results = self.model.predict(image, conf=self.model.conf, verbose=False)
             
             print(f"Detection results: {len(results)} items")
             detections_found = False
+            
+            # Reset detected centers for new prediction
+            self.detected_centers = []
             
             for i, r in enumerate(results):
                 print(f"Result {i}: has boxes: {hasattr(r, 'boxes')}")
@@ -107,8 +112,6 @@ class WeedDetectorModel:
                         center_x = int((b[0] + b[2]) / 2)
                         center_y = int((b[1] + b[3]) / 2)
                         
-                        if not hasattr(self, 'detected_centers'):
-                            self.detected_centers = []
                         self.detected_centers.append((center_x, center_y, class_name, conf))
                         
                         print(f"Box: {b}, Center: ({center_x}, {center_y}), Class: {class_name}, Confidence: {conf:.2f}")
@@ -138,7 +141,7 @@ class WeedDetectorModel:
             
             if not detections_found:
                 print("No detections found in this image")
-                text = "No objects detected"
+                text = f"No objects detected (conf>{self.model.conf:.2f})"
                 text_size = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 1.0, 2)[0]
                 text_x = (processed_image.shape[1] - text_size[0]) // 2
                 text_y = (processed_image.shape[0] + text_size[1]) // 2

@@ -387,7 +387,9 @@ class WeedDetectorGUI:
                 break
                 
             try:
-                self.model.model.conf = self.conf_var.get()
+                # Update model confidence from slider
+                if hasattr(self, 'model') and self.model:
+                    self.model.model.conf = self.conf_var.get()
                 
                 if hasattr(self.model, 'detected_centers'):
                     self.model.detected_centers = []
