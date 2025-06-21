@@ -5,13 +5,15 @@ WORKDIR /wheels
 COPY requirements.txt .
 
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install --upgrade pip \
+    pip install --upgrade pip==25.1.1 --no-cache-dir \
  && pip wheel --no-cache-dir --wheel-dir . -r requirements.txt
 
 FROM python:3.13-slim AS runtime
 
 WORKDIR /app
 
+# disable DL3008 (apt versions pinning) for this RUN
+# hadolint ignore=DL3008
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
       libgl1 \
