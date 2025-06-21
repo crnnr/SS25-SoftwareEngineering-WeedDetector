@@ -1,9 +1,21 @@
+"""Controller module for the Weed Detector application.
+
+This module contains the WeedDetectorController class that coordinates
+interactions between the model, GUI, and robot components.
+"""
+
+import os
 from model import WeedDetectorModel
 from gui import WeedDetectorGUI
 from robot import Robot
-import os
+
 
 class WeedDetectorController:
+    """Controller class that manages interactions between model, GUI, and robot.
+    
+    This class acts as the central coordinator for the weed detection application,
+    handling user interactions and coordinating between different components.
+    """
     def __init__(self, model: WeedDetectorModel, gui: WeedDetectorGUI):
         self.model = model
         self.gui = gui
@@ -32,7 +44,7 @@ class WeedDetectorController:
             self.gui.display_image(image)
             # Start detection process after image is loaded
             self.handle_detect(file_path)
-        except Exception as e:
+        except (ValueError, FileNotFoundError, OSError) as e:
             self.gui.show_error_box(f"Fehler beim Laden des Bildes: {e}")
 
     def handle_detect(self, file_path):
@@ -41,7 +53,7 @@ class WeedDetectorController:
             # Update model confidence from GUI slider
             confidence = self.gui.conf_var.get()
             self.model.model.conf = confidence
-            
+
             image = self.model.load_image(file_path)
             # Perform detection using the model
             processed_image, result = self.model.detect_weeds(image)
@@ -50,21 +62,21 @@ class WeedDetectorController:
                 raise ValueError("Processed image is None, detection failed.")
             self.gui.display_image(processed_image)
             self.gui.update_results(f"Detection with confidence {confidence}: {result}")
-        except Exception as e:
+        except (ValueError, FileNotFoundError, OSError, RuntimeError) as e:
             self.gui.show_error_box(f"Fehler bei der Erkennung: {e}")
 
     def handle_start_robot(self):
         """ will be called when the user clicks the start robot button."""
         try:
             self.robot.start_robot()
-        except Exception as e:
+        except (RuntimeError, OSError) as e:
             self.gui.show_error_box(f"Fehler beim Starten des Roboters: {e}")
 
     def handle_stop_robot(self):
         """ will be called when the user clicks the stop robot button."""
         try:
             self.robot.stop_robot()
-        except Exception as e:
+        except (RuntimeError, OSError) as e:
             self.gui.show_error_box(f"Fehler beim Stoppen des Roboters: {e}")
 
     def run(self):
