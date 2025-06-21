@@ -1,10 +1,9 @@
 """Weed Detection GUI using Tkinter and OpenCV"""
+import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from PIL import Image, ImageTk
 import cv2
-import threading
-import os
 
 class WeedDetectorGUI:
     def __init__(self):
@@ -376,7 +375,7 @@ class WeedDetectorGUI:
                                                    daemon=True)
             self.camera_thread.start()
 
-        except Exception as e:
+        except (OSError, RuntimeError) as e:
             messagebox.showerror("Error", f"Failed to start camera: {str(e)}")
 
     def stop_camera(self):
@@ -417,7 +416,7 @@ class WeedDetectorGUI:
                                  f"object(s) detected"
                     self.root.after(0, self.update_live_results, result_msg)
 
-            except Exception as e:
+            except (OSError, RuntimeError, ValueError) as e:
                 print(f"Error processing frame: {e}")
 
         if self.cap:
@@ -435,6 +434,7 @@ class WeedDetectorGUI:
                                   command=self.stop_robot)
 
     def stop_robot(self):
+        """Stop the robot."""
         if hasattr(self, "on_stop_robot") and callable(self.on_stop_robot):
             self.on_stop_robot()
             self.robot_btn.config(text="Start Robot", bg="#f39c12",

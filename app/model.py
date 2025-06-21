@@ -3,10 +3,10 @@
 This module contains the WeedDetectorModel class that provides functionality
 for loading YOLO models, detecting weeds in images, and formatting results.
 """
-import cv2
 import os
+import traceback
+import cv2
 from ultralytics import YOLO
-import numpy as np
 
 class WeedDetectorModel:
     """YOLO-based weed detection model for image processing and analysis.
@@ -168,20 +168,22 @@ class WeedDetectorModel:
                     2
                 )
 
-        except Exception as e:
+        except (RuntimeError, OSError, ValueError) as e:
             print(f"Error during prediction: {str(e)}")
-            import traceback
             traceback.print_exc()
             return image
 
         return processed_image
 
     def train(self, train_data_path, epochs=50):
+        """Train the YOLO model with provided training data."""
         self.model.train(data=train_data_path, epochs=epochs)
 
     def evaluate(self, val_data_path):
+        """Evaluate the model performance on validation data."""
         results = self.model.val(data=val_data_path)
         return results
 
     def save_model(self, save_path):
+        """Save the trained model to the specified path."""
         self.model.save(save_path)

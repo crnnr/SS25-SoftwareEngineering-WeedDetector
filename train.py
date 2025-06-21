@@ -4,8 +4,8 @@ This script loads a data configuration file and trains a YOLOv11 model
 for weed detection using the Ultralytics framework.
 """
 
-import yaml
 import sys
+import yaml
 from pathlib import Path
 from ultralytics import YOLO
 
