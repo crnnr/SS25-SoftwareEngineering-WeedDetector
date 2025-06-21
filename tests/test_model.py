@@ -1,3 +1,4 @@
+"""Unit tests for the WeedDetectorModel class."""
 import unittest
 import numpy as np
 import cv2
