@@ -37,7 +37,8 @@ class TestWeedDetectorModel(unittest.TestCase):
 
     def test_detect_weeds_runs(self):
         """Test if the detect_weeds method runs without errors."""
-        # Da YOLO-Modell geladen wird, kann dieser Test fehlschlagen, wenn das Modell nicht vorhanden ist.
+        # Da YOLO-Modell geladen wird, kann dieser Test fehlschlagen,
+        # wenn das Modell nicht vorhanden ist.
         # Wir testen nur, ob die Methode ohne Exception läuft.
         try:
             processed, result = self.model.detect_weeds(self.dummy_image)

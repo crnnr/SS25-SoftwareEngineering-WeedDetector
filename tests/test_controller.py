@@ -1,8 +1,11 @@
+"""Unit tests for the WeedDetectorController class."""
+
 import unittest
 from unittest.mock import MagicMock
 from controller import WeedDetectorController
 
 class TestWeedDetectorController(unittest.TestCase):
+    """Test cases for the WeedDetectorController class."""
     def setUp(self):
         self.mock_model = MagicMock() # Mock WeedDetectorModel
         self.mock_gui = MagicMock() # Mock WeedDetectorGUI

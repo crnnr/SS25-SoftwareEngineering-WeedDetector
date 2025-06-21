@@ -1,4 +1,4 @@
-""" Entry point for the Weed Detector application. This script initializes the GUI and loads the model. """
+""" Entry point for the Weed Detector application. This initializes the GUI and loads the model. """
 from controller import WeedDetectorController
 from model import WeedDetectorModel
 from gui import WeedDetectorGUI

@@ -3,6 +3,7 @@ import threading
 import time
 
 class Robot:
+    """Controller for the automation robot that can be controlled via the GUI."""
     def __init__(self, gui, model):
         self.gui = gui
         self.model = model
@@ -12,7 +13,7 @@ class Robot:
         # Set up GUI callbacks
         self.gui.on_start_robot = self.start_robot
         self.gui.on_stop_robot = self.stop_robot
-    
+
     def start_robot(self):
         """Start the robot."""
         self.is_running = True
@@ -20,7 +21,7 @@ class Robot:
         self.gui.log_robot_action("Robot started")
         self.thread = threading.Thread(target=self.drive_loop, daemon=True)
         self.thread.start()
-    
+
     def stop_robot(self):
         """Stop the robot."""
         self.is_running = False
@@ -29,7 +30,7 @@ class Robot:
             self.thread.join()
         self.gui.toggle_camera()
         self.gui.log_robot_action("Robot stopped")
-    
+
     def drive_loop(self):
         """Main loop for driving the robot."""
         while self.is_running:
