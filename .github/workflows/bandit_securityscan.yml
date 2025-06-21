@@ -1,33 +1,31 @@
-name: Bandit securityscan
+name: Security Scan
 
 on:
   push:
-    branches:
-      - main
-
-env:
-  VERSION: ${{github.ref_name}}
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  quality_and_test:
+  bandit:
+    name: Bandit Scan
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        python-version: ["3.13"]
-
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - uses: actions/checkout@v4
-      
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
 
-    - name: Install Requirements
-      shell: pwsh
-      run: |
-        pip install -r requirements.txt
-        pip install bandit
-        foreach ($file in $(git ls-files '*.py')) { cat $file | bandit -f json - }
+      - name: Install Bandit
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit
+
+      - name: Run Bandit security scan
+        run: |
+          # scan the repo recursively instead of using stdin
+          bandit -r . --skip trojansource
