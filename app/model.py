@@ -1,9 +1,19 @@
+"""YOLO-based weed detection model module.
+
+This module contains the WeedDetectorModel class that provides functionality
+for loading YOLO models, detecting weeds in images, and formatting results.
+"""
 import cv2
 import os
 from ultralytics import YOLO
 import numpy as np
 
 class WeedDetectorModel:
+    """YOLO-based weed detection model for image processing and analysis.
+    
+    This class provides functionality to load YOLO models, detect weeds in images,
+    and format detection results for display in the GUI.
+    """
     def __init__(self, model_path="yolov8n.pt"):
         self.model_path = model_path
         possible_trained_models = [
@@ -27,7 +37,7 @@ class WeedDetectorModel:
         try:
             self.model = YOLO(self.model_path)
             print(f"Model class names: {self.model.names}")
-        except Exception as e:
+        except (OSError, RuntimeError, ValueError) as e:
             print(f"Error loading model {self.model_path}: {e}")
             print(f"Falling back to default model {model_path}")
             self.model_path = model_path
@@ -65,6 +75,7 @@ class WeedDetectorModel:
         return "\n".join(lines)
 
     def predict(self, image):
+        """Predict and detect objects in the given image using YOLO model."""
         image_source = image
         is_path = isinstance(image, str)
 

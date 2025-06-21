@@ -45,7 +45,7 @@ class TestWeedDetectorModel(unittest.TestCase):
             processed, result = self.model.detect_weeds(self.dummy_image)
             self.assertIsNotNone(processed)
             self.assertIsInstance(result, str)
-        except Exception as e:
+        except (OSError, RuntimeError, ValueError, ImportError) as e:
             self.skipTest(f"YOLO model not available: {e}")
 
 if __name__ == "__main__":

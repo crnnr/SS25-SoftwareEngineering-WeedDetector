@@ -3,6 +3,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 import tkinter as tk
 from gui import WeedDetectorGUI
+
 class TestWeedDetectorGUI(unittest.TestCase):
     """Unit tests for the WeedDetectorGUI class."""
 
@@ -46,6 +47,7 @@ class TestWeedDetectorGUI(unittest.TestCase):
 
     @patch('tkinter.messagebox.showerror')
     def test_show_error_box(self, mock_showerror):
+        """Test if error box is shown correctly."""
         self.gui.show_error_box("Fehlertext")
         mock_showerror.assert_called_with("Error", "Fehlertext")
         content = self.gui.results_text.get("1.0", tk.END)

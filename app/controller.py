@@ -80,4 +80,5 @@ class WeedDetectorController:
             self.gui.show_error_box(f"Fehler beim Stoppen des Roboters: {e}")
 
     def run(self):
+        """Start GUI event loop."""
         self.gui.run()
