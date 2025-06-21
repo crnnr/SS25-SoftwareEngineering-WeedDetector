@@ -6,6 +6,7 @@ from PIL import Image, ImageTk
 import cv2
 
 class WeedDetectorGUI:
+    """Graphical User Interface for the Weed Detection System."""
     def __init__(self):
         """Initialize the Weed Detector GUI."""
         self.root = tk.Tk()

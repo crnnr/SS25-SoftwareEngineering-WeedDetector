@@ -19,7 +19,7 @@ class TestWeedDetectorGUI(unittest.TestCase):
 
     def test_initialization(self):
         """Test if the GUI initializes correctly."""
-        self.assertIsInstance(self.gui, WeedDetectorGUI) # Check if gui is an instance of WeedDetectorGUI
+        self.assertIsInstance(self.gui, WeedDetectorGUI) #See if gui is instance of WeedDetectorGUI
         self.assertTrue(hasattr(self.gui, 'select_image_button'))
         self.assertTrue(hasattr(self.gui, 'detect_button'))
 

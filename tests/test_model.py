@@ -5,6 +5,7 @@ import cv2
 from model import WeedDetectorModel
 
 class TestWeedDetectorModel(unittest.TestCase):
+    """Test cases for the WeedDetectorModel class."""
     def setUp(self):
         """Set up the WeedDetectorModel instance and a dummy image for testing."""
         self.model = WeedDetectorModel()
