@@ -16,10 +16,10 @@ print(f"Loaded data config: {data_cfg}")
 
 resp = input("Start YOLOv8 detection training now? (y/n): ").strip().lower()
 if resp == "y":
-    model = YOLO("yolov8n.pt")
+    model = YOLO("yolo11n.pt")
     model.train(
         data=str(DATA_YAML),
-        epochs=20,
+        epochs=100,
         imgsz=640,
         project=str(PROJECT_ROOT / "runs"),
         name="detect_train",

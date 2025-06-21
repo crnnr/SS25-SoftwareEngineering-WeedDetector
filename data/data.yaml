@@ -2,10 +2,12 @@ train: ../train/images
 val: ../valid/images
 test: ../test/images
 
-nc: 1
-names: ['0']
+nc: 16
+names: ['weed1', 'weed10', 'weed11', 'weed12', 'weed13', 'weed14', 'weed15', 'weed16', 'weed2', 'weed3', 'weed4', 'weed5', 'weed6', 'weed7', 'weed8', 'weed9']
 
 roboflow:
-  workspace: crnnr-weeddetector
-  project: weed-model
+  workspace: crnnr
+  project: weeddetectorr-2-iasbz
   version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/crnnr/weeddetectorr-2-iasbz/dataset/1
