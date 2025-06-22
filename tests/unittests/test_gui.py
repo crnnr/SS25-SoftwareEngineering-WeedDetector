@@ -33,13 +33,12 @@ class TestWeedDetectorGUI(unittest.TestCase):
 
     def test_display_image(self):
         """Test if display_image draws an image on the canvas."""
-        dummy_image = MagicMock()  # Create a mock image
+        import numpy as np
+        dummy_image = np.zeros((100, 100, 3), dtype=np.uint8)
         self.gui.display_image(dummy_image)
-        # update the GUI to process the image
-        self.gui.root.update_idletasks()
-        # Check if the canvas has items
+        self.gui.root.update_idletasks()  # Update the GUI to reflect changes
         items = self.gui.canvas.find_all()
-        self.assertTrue(len(items) > 0)
+        self.assertGreater(len(items) > 0)
 
     def test_update_results(self):
         """Test if results are updated correctly."""

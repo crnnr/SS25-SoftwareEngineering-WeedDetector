@@ -1,7 +1,8 @@
 """ Entry point for the Weed Detector application. This initializes the GUI and loads the model. """
-from controller import WeedDetectorController
-from model import WeedDetectorModel
-from gui import WeedDetectorGUI
+from app.controller import WeedDetectorController
+from app.model import WeedDetectorModel
+from app.gui import WeedDetectorGUI
+
 
 def main():
     """Main function to run the Weed Detector application."""
