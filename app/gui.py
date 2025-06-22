@@ -299,36 +299,38 @@ class WeedDetectorGUI:
 
     def display_image(self, cv_image):
         """Display an OpenCV image in the Tkinter canvas."""
-        if len(cv_image.shape) == 3:
-            rgb_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
-        else:
-            rgb_image = cv_image
+        try:
+            if cv_image is None:
+                raise ValueError("Received None image for display.")
+            if  len(cv_image.shape) == 3:
+                rgb_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
+            else:
+                rgb_image = cv_image
 
-        pil_image = Image.fromarray(rgb_image)
+            pil_image = Image.fromarray(rgb_image)
 
-        canvas_width = self.canvas.winfo_width()
-        canvas_height = self.canvas.winfo_height()
+            canvas_width = self.canvas.winfo_width()
+            canvas_height = self.canvas.winfo_height()
+            if canvas_width <= 1 or canvas_height <= 1:
+                canvas_width, canvas_height = 800, 600
+            
+            img_width, img_height = pil_image.size
+            scale = min(canvas_width / img_width, canvas_height / img_height, 1.0)
+            new_width = int(img_width * scale)
+            new_height = int(img_height * scale)
+            display_image = pil_image.resize((new_width, new_height),
+                                                Image.Resampling.LANCZOS)
+            
+            self._canvas_image_obj = ImageTk.PhotoImage(display_image)
 
-        if canvas_width <= 1 or canvas_height <= 1:
-            canvas_width, canvas_height = 800, 600
+            self.canvas.delete("all")
+            self.canvas.configure(scrollregion=(0, 0, new_width, new_height))
 
-        img_width, img_height = pil_image.size
-
-        scale_x = canvas_width / img_width
-        scale_y = canvas_height / img_height
-        scale = min(scale_x, scale_y, 1.0)  # Don't upscale
-
-        new_width = int(img_width * scale)
-        new_height = int(img_height * scale)
-
-        display_image = pil_image.resize((new_width, new_height),
-                                         Image.Resampling.LANCZOS)
-
-        self.photo = ImageTk.PhotoImage(display_image)
-
-        self.canvas.delete("all")
-        self.canvas.configure(scrollregion=(0, 0, new_width, new_height))
-        self.canvas.create_image(new_width//2, new_height//2, image=self.photo)
+            self._canvas_image_id = self.canvas.create_image(
+                new_width // 2, new_height // 2, image=self._canvas_image_obj
+            )
+        except Exception as e:
+            self.show_error_box(f"Fehler beim Anzeigen des Bildes: {e}")
 
     def select_image(self):
         """Open a file dialog to select an image and process it."""
