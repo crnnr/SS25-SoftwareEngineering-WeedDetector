@@ -1,7 +1,7 @@
 """ Unit tests for the Robot class."""
 import unittest
 from unittest.mock import MagicMock, patch
-from robot import Robot
+from app.robot import Robot
 
 class TestRobot(unittest.TestCase):
     """Test cases for the Robot class."""
@@ -13,23 +13,23 @@ class TestRobot(unittest.TestCase):
 
     def test_start_sets_running_and_logs_action(self):
         """Tests the start method sets running to True and logs the action."""
-        self.robot.running = False
-        self.robot.start()
-        self.assertTrue(self.robot.running)
+        self.robot.is_running = False
+        self.robot.start_robot()
+        self.assertTrue(self.robot.is_running)
         self.mock_gui.log_robot_action.assert_any_call("Robot started")
         self.mock_gui.toggle_camera.assert_called_once()
 
     def test_stop_sets_running_false_and_logs_action(self):
         """Tests the stop method sets running to False and logs the action."""
-        self.robot.running = True
-        self.robot.stop()
-        self.assertFalse(self.robot.running)
+        self.robot.is_running = True
+        self.robot.stop_robot()
+        self.assertFalse(self.robot.is_running)
         self.mock_gui.log_robot_action.assert_any_call("Robot stopped")
 
     @patch("time.sleep", return_value=None)
     def test_drive_loop_stops_on_weed(self, _):
         """Tests the drive_loop method stops when a weed is detected."""
-        self.robot.running = True
+        self.robot.is_running = True
         self.mock_gui.cap.read.side_effect = [
             (True, "frame1"),
             (True, "frame2"),
@@ -51,7 +51,7 @@ class TestRobot(unittest.TestCase):
     @patch("time.sleep", return_value=None)
     def test_drive_loop_stops_on_camera_error(self, _):
         """Tests the drive_loop method stops if camera read fails."""
-        self.robot.running = True
+        self.robot.is_running = True
         self.mock_gui.cap.read.return_value = (False, None)
         self.robot.drive_loop()
         self.mock_gui.log_robot_action.assert_any_call("Camera error. Robot stopped.")

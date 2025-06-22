@@ -2,7 +2,7 @@
 import unittest
 import numpy as np
 import cv2
-from model import WeedDetectorModel
+from app.model import WeedDetectorModel
 
 class TestWeedDetectorModel(unittest.TestCase):
     """Test cases for the WeedDetectorModel class."""

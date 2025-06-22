@@ -2,7 +2,7 @@
 import unittest
 from unittest.mock import MagicMock, patch
 import tkinter as tk
-from gui import WeedDetectorGUI
+from app.gui import WeedDetectorGUI
 
 class TestWeedDetectorGUI(unittest.TestCase):
     """Unit tests for the WeedDetectorGUI class."""
