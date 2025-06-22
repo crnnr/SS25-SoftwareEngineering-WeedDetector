@@ -7,15 +7,26 @@ from app.gui import WeedDetectorGUI
 class TestWeedDetectorGUI(unittest.TestCase):
     """Unit tests for the WeedDetectorGUI class."""
 
+    @classmethod
+    def setUpClass(cls):
+        """Set up the GUI for testing."""
+        cls.root = tk.Tk()
+        cls.root.withdraw()  # Hide the root window for testing
+
+    @classmethod
+    def tearDownClass(cls):
+        """Destroy the GUI after tests."""
+        cls.root.destroy()
+
     def setUp(self):
         """Set up the GUI for testing."""
-        self.root = tk.Tk()
         self.gui = WeedDetectorGUI()
         self.gui.master = self.root
 
     def tearDown(self):
         """Destroy the GUI after tests."""
-        self.root.destroy()
+        self.gui.canvas.destroy()
+        self.gui = None
 
     def test_initialization(self):
         """Test if the GUI initializes correctly."""
@@ -33,12 +44,22 @@ class TestWeedDetectorGUI(unittest.TestCase):
 
     def test_display_image(self):
         """Test if display_image draws an image on the canvas."""
-        import numpy as np
-        dummy_image = np.zeros((100, 100, 3), dtype=np.uint8)
-        self.gui.display_image(dummy_image)
-        self.gui.root.update_idletasks()  # Update the GUI to reflect changes
+        import cv2
+        import os
+
+        image_path = os.path.join(os.path.dirname(__file__), "..", "unkraut1.jpg")
+        image_path = os.path.abspath(image_path)
+        self.assertTrue(os.path.exists(image_path), "Image file does not exist.")
+
+        cv_image = cv2.imread(image_path)
+        self.assertIsNotNone(cv_image, "Failed to read the image file.")
+
+        self.gui.canvas.config(width=400, height=300)
+        self.gui.canvas.update()
+        self.gui.display_image(cv_image)
+        self.root.update()
         items = self.gui.canvas.find_all()
-        self.assertGreater(len(items) > 0)
+        self.assertGreater(len(items), 0)
 
     def test_update_results(self):
         """Test if results are updated correctly."""
@@ -79,6 +100,26 @@ class TestWeedDetectorGUI(unittest.TestCase):
             self.gui.toggle_camera()
             self.assertFalse(self.gui.camera_running)
             self.assertEqual(self.gui.camera_btn['text'], "📷 Start Camera")
+
+    def test_start_robot(self):
+        """Test starting the robot."""
+        with patch('app.robot.Robot.start_robot') as mock_start:
+            self.gui.robot_btn.invoke()
+
+    def test_stop_robot(self):
+        """Test stopping the robot."""
+        with patch('app.robot.Robot.stop_robot') as mock_stop:
+            self.gui.robot_btn.invoke()
+    
+    def test_log_robot_action(self):
+        """Test logging robot actions."""
+        self.gui.log_robot_action("Robot started")
+        content = self.gui.robot_actions_text.get("1.0", tk.END)
+        self.assertIn("Robot started", content)
+
+        self.gui.log_robot_action("Robot stopped")
+        content = self.gui.robot_actions_text.get("1.0", tk.END)
+        self.assertIn("Robot stopped", content)
 
 if __name__ == "__main__":
     unittest.main()
