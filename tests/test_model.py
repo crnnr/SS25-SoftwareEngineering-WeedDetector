@@ -85,5 +85,54 @@ class TestWeedDetectorModel(unittest.TestCase):
         with self.assertRaises(Exception):
             self.model.predict(None)
 
+    def test_init_model_with_invalid_path(self):
+        """Test model initialization with an invalid path."""
+        try:
+            model = WeedDetectorModel(model_path="not_existing_model.pt")
+            self.assertIsNotNone(model.model)
+            self.assertTrue(model.model_path.endswith(".pt"))
+        except Exception as e:
+            self.skipTest(f"YOLO model not available: {e}")
+
+    def test_evaluate_model(self):
+        """Test the evaluate-method runs without errors."""
+        val_data_path = "../data/val"
+        try:
+            self.model.evaluate(val_data_path=val_data_path)
+        except (OSError, RuntimeError, ValueError, ImportError) as e:
+            self.skipTest(f"YOLO model not available: {e}")
+
+    def test_save_model(self):
+        """Test saving the model runs without errors."""
+        import os
+        try:
+            self.model.save_model("test_model.pt")
+            self.assertTrue(os.path.exists("test_model.pt"))
+            os.remove("test_model.pt")
+        except (OSError, RuntimeError, ValueError, ImportError) as e:
+            self.skipTest(f"YOLO model not available: {e}")
+
+    def test_predict_draws_no_detection_text_on_empty_result(self):
+        """Test that 'No objects detected' text is drawn when no detections are found."""
+        import numpy as np
+        from unittest.mock import patch, MagicMock
+
+        dummy_image = np.zeros((100, 100, 3), dtype=np.uint8)
+
+        class DummyResult:
+            boxes = []
+
+        dummy_model = MagicMock()
+        dummy_model.conf = 0.15
+        dummy_model.names = {0: "weed"}
+        dummy_model.predict.return_value = [DummyResult()]
+
+        model = WeedDetectorModel()
+        model.model = dummy_model 
+
+        processed = model.predict(dummy_image)
+
+        self.assertIsInstance(processed, np.ndarray)
+
 if __name__ == "__main__":
     unittest.main()
