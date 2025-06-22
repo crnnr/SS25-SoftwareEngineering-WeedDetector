@@ -1,7 +1,9 @@
 """ Unit tests for the GUI module. """
+import os
 import unittest
 from unittest.mock import MagicMock, patch
 import tkinter as tk
+import cv2
 from app.gui import WeedDetectorGUI
 
 class TestWeedDetectorGUI(unittest.TestCase):
