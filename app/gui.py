@@ -63,6 +63,7 @@ class WeedDetectorGUI:
         self.on_detect = None # Callback for detection
         self.on_start_robot = None  # Callback for robot start
         self.on_stop_robot = None  # Callback for robot stop
+        self.on_camera_frame = None # Callback for camera frame processing
 
         self.model_info_var = tk.StringVar(value="Model: Not loaded")
 
@@ -313,14 +314,14 @@ class WeedDetectorGUI:
             canvas_height = self.canvas.winfo_height()
             if canvas_width <= 1 or canvas_height <= 1:
                 canvas_width, canvas_height = 800, 600
-            
+
             img_width, img_height = pil_image.size
             scale = min(canvas_width / img_width, canvas_height / img_height, 1.0)
             new_width = int(img_width * scale)
             new_height = int(img_height * scale)
             display_image = pil_image.resize((new_width, new_height),
                                                 Image.Resampling.LANCZOS)
-            
+
             self._canvas_image_obj = ImageTk.PhotoImage(display_image)
 
             self.canvas.delete("all")
@@ -329,7 +330,7 @@ class WeedDetectorGUI:
             self._canvas_image_id = self.canvas.create_image(
                 new_width // 2, new_height // 2, image=self._canvas_image_obj
             )
-        except Exception as e:
+        except (OSError, ValueError, RuntimeError) as e:
             self.show_error_box(f"Fehler beim Anzeigen des Bildes: {e}")
 
     def select_image(self):
@@ -344,12 +345,12 @@ class WeedDetectorGUI:
             ]
         )
 
-        if file_path and self.on_select_image:
+        if file_path and callable(self.on_select_image):
             self.on_select_image(file_path)
 
     def process_image(self, file_path):
         """Process the selected image using the model."""
-        if self.on_detect:
+        if callable(self.on_detect):
             self.on_detect(file_path)
 
     def toggle_camera(self):
@@ -402,21 +403,16 @@ class WeedDetectorGUI:
                 break
 
             try:
-                # Update model confidence from slider
-                if hasattr(self, 'model') and self.model:
-                    self.model.model.conf = self.conf_var.get()
-
-                if hasattr(self.model, 'detected_centers'):
-                    self.model.detected_centers = []
-
-                processed_frame = self.model.predict(frame)
+                if callable(self.on_camera_frame):
+                    processed_frame, detected_centers = self.on_camera_frame(frame, self.conf_var.get())
+                else:
+                    processed_frame = frame
+                    detected_centers = []
 
                 self.root.after(0, self.display_image, processed_frame)
 
-                if hasattr(self.model, 'detected_centers') and \
-                   self.model.detected_centers:
-                    result_msg = f"Live: {len(self.model.detected_centers)} " \
-                                 f"object(s) detected"
+                if detected_centers:
+                    result_msg = f"Live: {len(detected_centers)} object(s) detected"
                     self.root.after(0, self.update_live_results, result_msg)
 
             except (OSError, RuntimeError, ValueError) as e:

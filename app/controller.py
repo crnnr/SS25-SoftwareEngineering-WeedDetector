@@ -32,6 +32,7 @@ class WeedDetectorController:
         self.gui.on_detect = self.handle_detect
         self.gui.on_start_robot = self.handle_start_robot
         self.gui.on_stop_robot = self.handle_stop_robot
+        self.gui.on_camera_frame = self.handle_camera_frame
 
         # Optional: Model information display
         if hasattr(self.gui, "model_info_var"):
@@ -64,6 +65,12 @@ class WeedDetectorController:
             self.gui.update_results(f"Detection with confidence {confidence}: {result}")
         except (ValueError, FileNotFoundError, OSError, RuntimeError) as e:
             self.gui.show_error_box(f"Fehler bei der Erkennung: {e}")
+
+    def handle_camera_frame(self, frame, conf):
+        self.model.model.conf = conf
+        self.model.detected_centers = []
+        processed_frame = self.model.predict(frame)
+        return processed_frame, getattr(self.model, "detected_centers", [])
 
     def handle_start_robot(self):
         """ will be called when the user clicks the start robot button."""

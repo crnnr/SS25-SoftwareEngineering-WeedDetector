@@ -63,5 +63,23 @@ class TestWeedDetectorController(unittest.TestCase):
         self.mock_gui.toggle_camera.assert_called_once()
         self.mock_gui.log_robot_action.assert_called_with("Robot stopped")
 
+    def test_handle_camera_frame(self):
+        """Tests the handle_camera_frame method."""
+        dummy_frame = "frame"
+        confidence = 0.15
+        self.mock_model.predict.return_value = ("processed_frame")
+        processed_frame, centers = self.controller.handle_camera_frame(dummy_frame, confidence)
+        self.mock_model.predict.assert_called_with(dummy_frame)
+        self.assertEqual(processed_frame, "processed_frame")
+        self.assertEqual(centers, [])
+
+    def test_handle_camera_frame_exception(self):
+        """Tests handle_camera_frame when model.predict raises an exception."""
+        dummy_frame = "frame"
+        confidence = 0.15
+        self.mock_model.predict.side_effect = RuntimeError("Prediction failed")
+        with self.assertRaises(RuntimeError):
+            self.controller.handle_camera_frame(dummy_frame, confidence)
+
 if __name__ == "__main__":
     unittest.main()
