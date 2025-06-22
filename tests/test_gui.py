@@ -44,9 +44,6 @@ class TestWeedDetectorGUI(unittest.TestCase):
 
     def test_display_image(self):
         """Test if display_image draws an image on the canvas."""
-        import cv2
-        import os
-
         image_path = os.path.join(os.path.dirname(__file__), "..", "unkraut1.jpg")
         image_path = os.path.abspath(image_path)
         self.assertTrue(os.path.exists(image_path), "Image file does not exist.")

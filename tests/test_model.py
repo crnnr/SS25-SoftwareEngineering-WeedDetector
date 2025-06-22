@@ -1,9 +1,9 @@
 """Unit tests for the WeedDetectorModel class."""
+import os
 import unittest
+from unittest.mock import MagicMock
 import numpy as np
 import cv2
-import os
-from unittest.mock import MagicMock
 from app.model import WeedDetectorModel
 
 class TestWeedDetectorModel(unittest.TestCase):
@@ -93,7 +93,7 @@ class TestWeedDetectorModel(unittest.TestCase):
             model = WeedDetectorModel(model_path="not_existing_model.pt")
             self.assertIsNotNone(model.model)
             self.assertTrue(model.model_path.endswith(".pt"))
-        except Exception as e:
+        except (OSError, RuntimeError, ValueError, ImportError) as e:
             self.skipTest(f"YOLO model not available: {e}")
 
     def test_evaluate_model(self):
@@ -106,7 +106,6 @@ class TestWeedDetectorModel(unittest.TestCase):
 
     def test_save_model(self):
         """Test saving the model runs without errors."""
-        import os
         try:
             self.model.save_model("test_model.pt")
             self.assertTrue(os.path.exists("test_model.pt"))
@@ -136,4 +135,3 @@ class TestWeedDetectorModel(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

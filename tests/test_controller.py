@@ -43,7 +43,8 @@ class TestWeedDetectorController(unittest.TestCase):
         self.mock_model.load_image.assert_called_with(image_path)
         self.mock_model.detect_weeds.assert_called_with(image_path)
         self.mock_gui.display_image.assert_called_with(dummy_processed)
-        self.mock_gui.update_results.assert_called_with(f"Detection with confidence 0.15: {dummy_result}")
+        self.mock_gui.update_results.assert_called_with(f"Detection with confidence 0.15: \
+                                                        {dummy_result}")
 
     def test_handle_detect_failure(self):
         """Tests the handle_detect method for failure cases."""
@@ -67,7 +68,7 @@ class TestWeedDetectorController(unittest.TestCase):
         """Tests the handle_camera_frame method."""
         dummy_frame = "frame"
         confidence = 0.15
-        self.mock_model.predict.return_value = ("processed_frame")
+        self.mock_model.predict.return_value = "processed_frame"
         processed_frame, centers = self.controller.handle_camera_frame(dummy_frame, confidence)
         self.mock_model.predict.assert_called_with(dummy_frame)
         self.assertEqual(processed_frame, "processed_frame")

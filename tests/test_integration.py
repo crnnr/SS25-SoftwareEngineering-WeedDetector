@@ -1,3 +1,4 @@
+"""Integration tests for the Weed Detector application."""
 import unittest
 from unittest.mock import MagicMock, patch
 import numpy as np
