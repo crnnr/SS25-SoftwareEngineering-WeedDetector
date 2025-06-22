@@ -22,6 +22,7 @@ class WeedDetectorModel:
             "data/models/best.pt",
             "models/best.pt",
         ]
+        self.detected_centers = []
 
         trained_model_found = False
         for trained_path in possible_trained_models:

@@ -25,6 +25,9 @@ class WeedDetectorGUI:
         self.canvas = None
         self.results_text = None
         self.robot_actions_text = None
+        self._canvas_image_obj = None
+        self._canvas_image_id = None
+        self.camera_thread = None
 
         self.on_select_image = None # Callback for image selection
         self.on_detect = None # Callback for detection

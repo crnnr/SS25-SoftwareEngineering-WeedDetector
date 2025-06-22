@@ -1,8 +1,8 @@
 """Integration tests for the Weed Detector application."""
 import unittest
 from unittest.mock import MagicMock, patch
-import numpy as np
 import os
+import numpy as np
 import cv2
 from app.model import WeedDetectorModel
 from app.gui import WeedDetectorGUI
