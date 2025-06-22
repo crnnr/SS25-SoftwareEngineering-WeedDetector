@@ -50,5 +50,17 @@ class TestWeedDetectorController(unittest.TestCase):
         self.controller.handle_detect("fail.jpg")
         self.mock_gui.show_error_box.assert_called()
 
+    def test_handle_start_robot(self):
+        """Tests the handle_start_robot method."""
+        self.controller.handle_start_robot()
+        self.mock_gui.toggle_camera.assert_called_once()
+        self.mock_gui.log_robot_action.assert_called_with("Robot started")
+    
+    def test_handle_stop_robot(self):
+        """Tests the handle_stop_robot method."""
+        self.controller.handle_stop_robot()
+        self.mock_gui.toggle_camera.assert_called_once()
+        self.mock_gui.log_robot_action.assert_called_with("Robot stopped")
+
 if __name__ == "__main__":
     unittest.main()
