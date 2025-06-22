@@ -10,7 +10,7 @@ class TestWeedDetectorGUI(unittest.TestCase):
     def setUp(self):
         """Set up the GUI for testing."""
         self.root = tk.Tk()
-        self.gui = WeedDetectorGUI(MagicMock())
+        self.gui = WeedDetectorGUI()
         self.gui.master = self.root
 
     def tearDown(self):
@@ -20,8 +20,9 @@ class TestWeedDetectorGUI(unittest.TestCase):
     def test_initialization(self):
         """Test if the GUI initializes correctly."""
         self.assertIsInstance(self.gui, WeedDetectorGUI) # See if gui is instance of WeedDetectorGUI
-        self.assertTrue(hasattr(self.gui, 'select_image_button'))
-        self.assertTrue(hasattr(self.gui, 'detect_button'))
+        self.assertTrue(hasattr(self.gui, 'select_btn'))
+        self.assertTrue(hasattr(self.gui, 'camera_btn'))
+        self.assertTrue(hasattr(self.gui, 'robot_btn'))
 
     @patch('tkinter.filedialog.askopenfilename')
     def test_select_image(self, mock_askopenfilename):
@@ -31,19 +32,21 @@ class TestWeedDetectorGUI(unittest.TestCase):
         mock_askopenfilename.assert_called_once()
 
     def test_display_image(self):
-        """Test if the display image method works."""
-        # Assuming display_image method updates a label with an image
-        image = tk.PhotoImage()  # Mock image
-        self.gui.display_image(image)
-        # Check if the label has been updated with the image
-        self.assertEqual(self.gui.image_label.image, image)
+        """Test if display_image draws an image on the canvas."""
+        dummy_image = MagicMock()  # Create a mock image
+        self.gui.display_image(dummy_image)
+        # update the GUI to process the image
+        self.gui.root.update_idletasks()
+        # Check if the canvas has items
+        items = self.gui.canvas.find_all()
+        self.assertTrue(len(items) > 0)
 
     def test_update_results(self):
         """Test if results are updated correctly."""
         result = "Detected weeds: 5"
         self.gui.update_results(result)
-        # Check if the result label has been updated
-        self.assertEqual(self.gui.result_label['text'], result)
+        content = self.gui.results_text.get("1.0", tk.END)
+        self.assertIn(result, content)
 
     @patch('tkinter.messagebox.showerror')
     def test_show_error_box(self, mock_showerror):

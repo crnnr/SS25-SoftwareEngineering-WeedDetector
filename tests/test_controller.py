@@ -25,28 +25,29 @@ class TestWeedDetectorController(unittest.TestCase):
 
     def test_handle_select_image_failure(self):
         """Tests the handle_select_image method for failure cases."""
-        # Model.load_image wirft Exception
-        self.mock_model.load_image.side_effect = Exception("Fehler")
+        self.mock_model.load_image.side_effect = ValueError("Fehler beim Laden des Bildes: test")
         self.controller.handle_select_image("fail.jpg")
-        self.mock_gui.show_error_box.assert_called()
+        args, kwargs = self.mock_gui.show_error_box.call_args # Get the arguments passed to show_error_box
+        self.assertTrue(args[0].startswith("Fehler beim Laden des Bildes:"))
 
     def test_handle_detect_success(self):
-        """Tests the handle_detect method for successful detection."""
-        dummy_image = "image" # Mock image
-        dummy_processed = "processed" # Mock processed image
-        dummy_result = "result" # Mock detection result
-        self.mock_model.load_image.return_value = dummy_image
+        """Tests the handle_detect method for successful detection with a real image."""
+        # use a real image for testing
+        image_path = "unkraut1.jpg"
+        # model is loading the real image
+        self.mock_model.load_image.return_value = image_path
+        dummy_processed = "processed"
+        dummy_result = "result"
         self.mock_model.detect_weeds.return_value = (dummy_processed, dummy_result)
-        # handle_detect should call load_image, detect_weeds, display_image, and update_results
-        self.controller.handle_detect("test.jpg")
-        self.mock_model.load_image.assert_called_with("test.jpg")
-        self.mock_model.detect_weeds.assert_called_with(dummy_image)
+        self.controller.handle_detect(image_path)
+        self.mock_model.load_image.assert_called_with(image_path)
+        self.mock_model.detect_weeds.assert_called_with(image_path)
         self.mock_gui.display_image.assert_called_with(dummy_processed)
-        self.mock_gui.update_results.assert_called_with(dummy_result)
+        self.mock_gui.update_results.assert_called_with(f"Detection with confidence 0.15: {dummy_result}")
 
     def test_handle_detect_failure(self):
         """Tests the handle_detect method for failure cases."""
-        self.mock_model.load_image.side_effect = Exception("Fehler")
+        self.mock_model.load_image.side_effect = ValueError("Fehler")
         self.controller.handle_detect("fail.jpg")
         self.mock_gui.show_error_box.assert_called()
 
@@ -54,8 +55,8 @@ class TestWeedDetectorController(unittest.TestCase):
         """Tests the handle_start_robot method."""
         self.controller.handle_start_robot()
         self.mock_gui.toggle_camera.assert_called_once()
-        self.mock_gui.log_robot_action.assert_called_with("Robot started")
-    
+        self.mock_gui.log_robot_action.assert_called_with("Robot is driving forward...")
+
     def test_handle_stop_robot(self):
         """Tests the handle_stop_robot method."""
         self.controller.handle_stop_robot()

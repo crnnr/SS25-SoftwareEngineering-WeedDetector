@@ -5,9 +5,9 @@ interactions between the model, GUI, and robot components.
 """
 
 import os
-from model import WeedDetectorModel
-from gui import WeedDetectorGUI
-from robot import Robot
+from app.model import WeedDetectorModel
+from app.gui import WeedDetectorGUI
+from app.robot import Robot
 
 
 class WeedDetectorController:

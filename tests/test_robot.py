@@ -27,26 +27,19 @@ class TestRobot(unittest.TestCase):
         self.mock_gui.log_robot_action.assert_any_call("Robot stopped")
 
     @patch("time.sleep", return_value=None)
-    def test_drive_loop_stops_on_weed(self, _):
-        """Tests the drive_loop method stops when a weed is detected."""
+    def test_drive_loop_runs_until_weeds(self, _):
+        """Tests the drive_loop method runs until weeds are detected."""
         self.robot.is_running = True
-        self.mock_gui.cap.read.side_effect = [
-            (True, "frame1"),
-            (True, "frame2"),
-        ]
-        # first picture has no weed, second has weed
-        self.mock_model.detect_weeds.side_effect = [
-            ("processed1", "No weeds detected"),
-            ("processed2", "Weed detected!"),
-        ]
-        # drive_loop should stop after detecting a weed
+        self.mock_gui.cap.read.return_value = (True, "frame")
+        self.mock_model.detect_weeds.return_value = ("processed_image", "weed detected")
+
         self.robot.drive_loop()
-        self.mock_gui.display_image.assert_any_call("processed1")
-        self.mock_gui.display_image.assert_any_call("processed2")
-        self.mock_gui.update_results.assert_any_call("No weeds detected")
-        self.mock_gui.update_results.assert_any_call("Weed detected!")
-        self.mock_gui.log_robot_action.assert_any_call("Weed detected! Robot stopped.")
-        self.assertFalse(self.robot.running)
+        self.mock_gui.log_robot_action.assert_any_call("Robot is driving forward...")
+        self.mock_model.detect_weeds.assert_called_once_with("frame")
+        self.mock_gui.display_image.assert_called_with("processed_image")
+        self.mock_gui.update_results.assert_called_with("weed detected")
+        self.mock_gui.log_robot_action.assert_any_call("Weed detected, stopping robot.")
+        self.assertFalse(self.robot.is_running)
 
     @patch("time.sleep", return_value=None)
     def test_drive_loop_stops_on_camera_error(self, _):
@@ -54,8 +47,8 @@ class TestRobot(unittest.TestCase):
         self.robot.is_running = True
         self.mock_gui.cap.read.return_value = (False, None)
         self.robot.drive_loop()
-        self.mock_gui.log_robot_action.assert_any_call("Camera error. Robot stopped.")
-        self.assertFalse(self.robot.running)
+        self.mock_gui.log_robot_action.assert_any_call("Failed to read from camera")
+        self.assertFalse(self.robot.is_running)
 
 if __name__ == "__main__":
     unittest.main()

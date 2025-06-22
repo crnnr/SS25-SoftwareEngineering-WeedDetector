@@ -53,9 +53,11 @@ class WeedDetectorModel:
 
     def load_image(self, image_path):
         """Loads an image from the given path."""
+        if not os.path.isfile(image_path):
+            raise ValueError(f"Image file does not exist: {os.path.abspath(image_path)}")
         image = cv2.imread(image_path)
         if image is None:
-            raise ValueError(f"Image not found or invalid image path: {image_path}")
+            raise ValueError(f"Failed to load image (possibly invalid or corrupted): {os.path.abspath(image_path)}")
         return image
 
     def detect_weeds(self, image):
