@@ -103,14 +103,14 @@ class TestWeedDetectorGUI(unittest.TestCase):
 
     def test_start_robot(self):
         """Test starting the robot."""
-        with patch('app.robot.Robot.start_robot') as mock_start:
+        with patch('app.robot.Robot.start_robot'):
             self.gui.robot_btn.invoke()
 
     def test_stop_robot(self):
         """Test stopping the robot."""
-        with patch('app.robot.Robot.stop_robot') as mock_stop:
+        with patch('app.robot.Robot.stop_robot'):
             self.gui.robot_btn.invoke()
-    
+
     def test_log_robot_action(self):
         """Test logging robot actions."""
         self.gui.log_robot_action("Robot started")

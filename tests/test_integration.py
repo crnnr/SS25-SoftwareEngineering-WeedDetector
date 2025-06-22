@@ -1,11 +1,14 @@
 import unittest
 from unittest.mock import MagicMock, patch
 import numpy as np
+import os
+import cv2
 from app.model import WeedDetectorModel
 from app.gui import WeedDetectorGUI
 from app.controller import WeedDetectorController
 
 class TestIntegration(unittest.TestCase):
+    """Integration tests for the Weed Detector application."""
     def setUp(self):
         self.model = WeedDetectorModel()
         self.dummy_image = np.zeros((100, 100, 3), dtype=np.uint8)
@@ -15,7 +18,8 @@ class TestIntegration(unittest.TestCase):
         gui = MagicMock()
         controller = WeedDetectorController(self.model, gui)
         with patch.object(self.model, "load_image", return_value=self.dummy_image):
-            with patch.object(self.model, "detect_weeds", return_value=("processed", "result")) as mock_detect:
+            with patch.object(self.model, "detect_weeds",
+                               return_value=("processed", "result")) as mock_detect:
                 controller.handle_detect("dummy.jpg")
                 mock_detect.assert_called_with(self.dummy_image)
                 gui.display_image.assert_called_with("processed")
@@ -24,7 +28,8 @@ class TestIntegration(unittest.TestCase):
     def test_gui_and_model_integration(self):
         """Test: gui displays an image loaded by the model."""
         gui = WeedDetectorGUI()
-        image = self.model.load_image("dummy.jpg") if hasattr(self.model, "load_image") else self.dummy_image
+        image = self.model.load_image("dummy.jpg") \
+            if hasattr(self.model, "load_image") else self.dummy_image
         gui.display_image(image)
         gui.root.update()
         items = gui.canvas.find_all()
@@ -32,7 +37,6 @@ class TestIntegration(unittest.TestCase):
 
     def test_model_detect_weeds_with_real_image(self):
         """Test: mnodel detects weeds and returns results."""
-        import cv2, os
         image_path = os.path.join(os.path.dirname(__file__), "..", "unkraut1.jpg")
         image_path = os.path.abspath(image_path)
         if not os.path.exists(image_path):
@@ -56,7 +60,8 @@ class TestIntegration(unittest.TestCase):
         gui = MagicMock()
         controller = WeedDetectorController(self.model, gui)
         with patch.object(self.model, "load_image", return_value=self.dummy_image):
-            with patch.object(self.model, "detect_weeds", side_effect=ValueError("Detection failed")):
+            with patch.object(self.model, "detect_weeds",
+                               side_effect=ValueError("Detection failed")):
                 controller.handle_detect("dummy.jpg")
                 gui.show_error_box.assert_called()
                 self.assertIn("Detection failed", gui.show_error_box.call_args[0][0])

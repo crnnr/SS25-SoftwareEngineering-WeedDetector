@@ -27,7 +27,7 @@ class TestWeedDetectorController(unittest.TestCase):
         """Tests the handle_select_image method for failure cases."""
         self.mock_model.load_image.side_effect = ValueError("Fehler beim Laden des Bildes: test")
         self.controller.handle_select_image("fail.jpg")
-        args, kwargs = self.mock_gui.show_error_box.call_args # Get the arguments passed to show_error_box
+        args = self.mock_gui.show_error_box.call_args # Get the arguments passed to show_error_box
         self.assertTrue(args[0].startswith("Fehler beim Laden des Bildes:"))
 
     def test_handle_detect_success(self):

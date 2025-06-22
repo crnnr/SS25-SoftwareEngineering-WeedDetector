@@ -404,7 +404,8 @@ class WeedDetectorGUI:
 
             try:
                 if callable(self.on_camera_frame):
-                    processed_frame, detected_centers = self.on_camera_frame(frame, self.conf_var.get())
+                    processed_frame, detected_centers = self.on_camera_frame(
+                        frame, self.conf_var.get())
                 else:
                     processed_frame = frame
                     detected_centers = []

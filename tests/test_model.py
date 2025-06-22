@@ -2,6 +2,8 @@
 import unittest
 import numpy as np
 import cv2
+import os
+from unittest.mock import MagicMock
 from app.model import WeedDetectorModel
 
 class TestWeedDetectorModel(unittest.TestCase):
@@ -65,7 +67,7 @@ class TestWeedDetectorModel(unittest.TestCase):
             model = WeedDetectorModel(model_path="not_existing_model.pt")
             self.assertIsNotNone(model.model)
             self.assertTrue(model.model_path.endswith(".pt"))
-        except Exception as e:
+        except (OSError, RuntimeError, ValueError, ImportError) as e:
             self.skipTest(f"YOLO model not available: {e}")
 
     def test_format_detection_results_none(self):
@@ -114,12 +116,10 @@ class TestWeedDetectorModel(unittest.TestCase):
 
     def test_predict_draws_no_detection_text_on_empty_result(self):
         """Test that 'No objects detected' text is drawn when no detections are found."""
-        import numpy as np
-        from unittest.mock import patch, MagicMock
-
         dummy_image = np.zeros((100, 100, 3), dtype=np.uint8)
 
         class DummyResult:
+            """Mock class to simulate YOLO detection results."""
             boxes = []
 
         dummy_model = MagicMock()
@@ -128,7 +128,7 @@ class TestWeedDetectorModel(unittest.TestCase):
         dummy_model.predict.return_value = [DummyResult()]
 
         model = WeedDetectorModel()
-        model.model = dummy_model 
+        model.model = dummy_model
 
         processed = model.predict(dummy_image)
 
@@ -136,3 +136,4 @@ class TestWeedDetectorModel(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

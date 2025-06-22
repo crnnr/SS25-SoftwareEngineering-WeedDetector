@@ -67,6 +67,7 @@ class WeedDetectorController:
             self.gui.show_error_box(f"Fehler bei der Erkennung: {e}")
 
     def handle_camera_frame(self, frame, conf):
+        """ will be called when a new camera frame is available."""
         self.model.model.conf = conf
         self.model.detected_centers = []
         processed_frame = self.model.predict(frame)
