@@ -11,6 +11,26 @@ class WeedDetectorGUI:
         """Initialize the Weed Detector GUI."""
         self.root = tk.Tk()
         self.cap = None
+        self.camera_running = False
+        self.on_select_image = None
+        self.on_detect = None
+        self.on_start_robot = None
+        self.on_stop_robot = None
+        self.on_camera_frame = None
+        self.model_info_var = None
+        self.select_btn = None
+        self.camera_btn = None
+        self.robot_btn = None
+        self.conf_var = None
+        self.canvas = None
+        self.results_text = None
+        self.robot_actions_text = None
+
+        self.on_select_image = None # Callback for image selection
+        self.on_detect = None # Callback for detection
+        self.on_start_robot = None  # Callback for robot start
+        self.on_stop_robot = None  # Callback for robot stop
+        self.on_camera_frame = None # Callback for camera frame processing
 
         self.root.title("Weed Detector")
         self.root.geometry("1200x900")
@@ -58,12 +78,6 @@ class WeedDetectorGUI:
         control_frame.pack(side="left", fill="y", padx=(0, 10))
         control_frame.pack_propagate(False)
         self.camera_running = False
-
-        self.on_select_image = None # Callback for image selection
-        self.on_detect = None # Callback for detection
-        self.on_start_robot = None  # Callback for robot start
-        self.on_stop_robot = None  # Callback for robot stop
-        self.on_camera_frame = None # Callback for camera frame processing
 
         self.model_info_var = tk.StringVar(value="Model: Not loaded")
 
