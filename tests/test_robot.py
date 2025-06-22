@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 from robot import Robot
 
 class TestRobot(unittest.TestCase):
+    """Test cases for the Robot class."""
     def setUp(self):
         """Set up the Robot instance with mocked GUI and model."""
         self.mock_gui = MagicMock()

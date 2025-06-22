@@ -27,7 +27,7 @@ class TestWeedDetectorGUI(unittest.TestCase):
     def test_select_image(self, mock_askopenfilename):
         """Test the select image functionality."""
         mock_askopenfilename.return_value = 'test_image.jpg'
-        self.gui.select_image_button.invoke()
+        self.gui.select_btn.invoke() # Simulate button click
         mock_askopenfilename.assert_called_once()
 
     def test_display_image(self):
