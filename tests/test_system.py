@@ -1,7 +1,6 @@
 """System test for the Weed Detector application. This test simulates the full detection flow."""
 import unittest
 import os
-import cv2
 from app.model import WeedDetectorModel
 from app.gui import WeedDetectorGUI
 from app.controller import WeedDetectorController
