@@ -9,7 +9,7 @@ import cv2
 from ultralytics import YOLO
 
 class WeedDetectorModel:
-    """YOLO-based weed detection model for image processing and analysis.
+    """YOLO-based weed detection model for image processing and analysis. 
     
     This class provides functionality to load YOLO models, detect weeds in images,
     and format detection results for display in the GUI.

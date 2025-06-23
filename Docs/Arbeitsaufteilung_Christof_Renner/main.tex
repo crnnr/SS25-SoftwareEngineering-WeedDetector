@@ -1,0 +1,250 @@
+\documentclass[12pt]{scrreprt}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes, fit}
+
+% Define colors for code listings
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% Code listing style
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,                 
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+% Variables
+\newcommand{\faculty}{Faculty Applied Information Technology}
+\newcommand{\studies}{Bachelor of Cyber-Security}
+\newcommand{\thesistitleDE}{Projektimplementierung \\ Reflexion zum Projekt "WeedDetector"}
+\newcommand{\submissiondate}{11.\ Mai 2025}
+\newcommand{\supervisor}{Prof.\ Dr.\ Holger Jehle}
+
+\begin{document}
+\begin{titlepage}
+  \begin{center}
+    {\Large Technische Hochschule Deggendorf\\
+    \faculty\par}
+    \vspace{0.2cm}
+    {\Large Studiengang \studies\\}
+    \vspace{2\baselineskip}
+    {\Huge\bfseries \thesistitleDE\par}
+    \vspace{3\baselineskip}
+  \end{center}
+
+  \vfill
+
+  \parbox[t]{0.4\textwidth}{
+    \textbf{Vorgelegt von:}\\[0.5em]
+    Christof Renner\\
+    Matrikelnummer: 22301943\\
+    Manuel Friedl\\
+    Matrikelnummer: 1236626\\[1em]
+    Am: \submissiondate\par
+  }
+  \hfill
+  \parbox[t]{0.4\textwidth}{
+    \textbf{Prüfungsleitung:}\\[0.5em]
+    \supervisor
+  }
+\end{titlepage}
+
+\tableofcontents
+
+\chapter{Controller-Implementierung}
+
+Die WeedDetector-Anwendung folgt dem Model-View-Controller (MVC) Entwurfsmuster, wobei der \texttt{WeedDetectorController} als zentraler Koordinator zwischen GUI und Erkennungsmodell fungiert.
+
+Die Hauptaufgaben des Controllers umfassen:
+\begin{itemize}
+    \item Ereignisbasierte Kommunikation zwischen GUI und Modell
+    \item Verarbeitung von Benutzeraktionen (Bildauswahl, Erkennung, Robotersteuerung)
+    \item Implementierung robuster Fehlerbehandlungsmechanismen
+\end{itemize}
+
+Die Kommunikation erfolgt über Callback-Funktionen, die eine lose Kopplung der Komponenten ermöglichen:
+
+\begin{lstlisting}[language=Python, caption=Callback-Registrierung]
+# GUI-Callbacks werden im Konstruktor registriert
+self.gui.on_select_image = self.handle_select_image
+self.gui.on_detect = self.handle_detect
+self.gui.on_start_robot = self.handle_start_robot
+self.gui.on_stop_robot = self.handle_stop_robot
+\end{lstlisting}
+
+\chapter{Model \& Modeltraining}
+
+Der WeedDetector nutzt ein YOLO-Modell für die Unkrauterkennung aufgrund seiner exzellenten Balance aus Geschwindigkeit und Genauigkeit. Die Entscheidung basiert auf einem umfassenden Vergleich verschiedener Objekterkennungsalgorithmen.
+
+Die \texttt{WeedDetectorModel}-Klasse implementiert:
+\begin{itemize}
+    \item Automatische Modellsuche mit Fallback-Mechanismus
+    \item Konfigurierbare Erkennungsparameter (Konfidenz, IoU)
+    \item Methoden für Training, Inferenz und Ergebnisvisualisierung
+\end{itemize}
+
+Der Trainingsprozess nutzt die Ultralytics-YOLO-API und einen umfangreichen Datensatz mit über 13.000 annotierten Bildern:
+
+\begin{lstlisting}[language=Python, caption=Training]
+def train(self, train_data_path, epochs=50):
+    """Train the YOLO model with provided training data."""
+    self.model.train(data=train_data_path, epochs=epochs)
+\end{lstlisting}
+
+Die Trainingsdaten wurden mit verschiedenen Augmentierungstechniken aufbereitet:
+\begin{itemize}
+    \item Horizontale Spiegelung (50\% Wahrscheinlichkeit)
+    \item Zufällige Rotation und Bildausschnitte
+    \item Belichtungsanpassungen
+\end{itemize}
+
+\chapter{Security Scanning \& Linting}
+
+\section{Security Scanning mit Bandit}
+
+Für kontinuierliche Sicherheitsüberprüfungen wird Bandit eingesetzt, ein auf Python spezialisiertes Security-Scanning-Tool. Die Integration erfolgt über GitHub Actions:
+
+\begin{lstlisting}[language= Bash, caption=Security Scan Workflow]
+name: Security Scan
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  bandit:
+    name: Bandit Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with: { python-version: '3.x' }
+      - run: pip install bandit
+      - run: bandit -r . --skip trojansource
+\end{lstlisting}
+
+Bandit analysiert den Code auf Sicherheitsprobleme wie:
+\begin{itemize}
+    \item Injektionsanfälligkeiten
+    \item Hartcodierte Credentials
+    \item Unsichere Funktionsaufrufe
+\end{itemize}
+
+\section{Codequalität mit Pylint}
+
+Zur Sicherstellung konsistenter Codequalität wird Pylint als statisches Analysetool eingesetzt:
+
+\begin{lstlisting}[language= Bash, caption=Pylint Workflow]
+name: Pylint
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: { python-version: ["3.13"] }
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with: { python-version: ${{ matrix.python-version }} }
+    - run: pip install pylint
+    - run: pylint $(git ls-files '*.py')
+\end{lstlisting}
+
+Pylint prüft PEP 8 Konformität, Dokumentationsqualität, Komplexitätsmetriken und potenzielle Bugs.
+
+\chapter{Docker \& Deployment}
+
+\section{Containerisierung}
+
+Die Anwendung wird in Docker containerisiert, was eine konsistente Laufzeitumgebung sicherstellt. Die Dockerfile-Qualität wird mit Hadolint überprüft:
+
+\begin{lstlisting}[language= Bash, caption=Docker Lint]
+name: Docker Build and Test
+on:
+  push:
+    paths: [ 'Dockerfile' ]
+  pull_request:
+    paths: [ 'Dockerfile' ]
+jobs:
+  lint-dockerfile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hadolint/hadolint-action@v3.1.0
+        with: { dockerfile: Dockerfile }
+\end{lstlisting}
+
+Der Container umfasst die Python-Laufzeitumgebung, YOLO- und OpenCV-Bibliotheken sowie die Anwendungskomponenten.
+
+\section{Automatisiertes Deployment}
+
+Das Deployment erfolgt automatisiert über GitHub Actions mit Integration in Docker Hub:
+
+\begin{lstlisting}[language= Bash, caption=Build and Publish]
+name: Build and Publish Docker image
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'Dockerfile' ]
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: crnnr/weeddetector:latest
+\end{lstlisting}
+
+\section{Dependency-Management}
+
+Dependabot übernimmt die automatische Aktualisierung von Abhängigkeiten für Python-Pakete, Docker-Images und GitHub Actions.
+
+Das Projekt unterstützt verschiedene Deploymentstrategien:
+\begin{itemize}
+    \item Lokales Deployment für Entwicklung
+    \item Container-basiertes Deployment für Produktion
+    \item Versionierte Releases mit automatischen Updates
+\end{itemize}
+
+\chapter{Fazit}
+
+Die Implementierung des WeedDetector-Projekts demonstriert die erfolgreiche Integration moderner Softwareentwicklungspraktiken:
+
+\begin{itemize}
+    \item MVC-Architektur für strukturierte Komponentenorganisation
+    \item YOLO-basierte Objekterkennung für präzise Unkrautidentifikation
+    \item Automatisierte Sicherheits- und Codequalitätsprüfungen
+    \item Containerisierung für plattformübergreifende Kompatibilität
+    \item CI/CD-Pipeline für kontinuierliche Integration und Deployment
+\end{itemize}
+
+Diese Kombination ermöglicht eine robuste, wartbare und sichere Anwendung für die Unkrauterkennung mit minimalen Ressourcenanforderungen und hoher Erkennungsgenauigkeit.
+
+\end{document}
