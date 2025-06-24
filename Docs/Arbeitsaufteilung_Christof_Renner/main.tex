@@ -123,7 +123,7 @@ Die Trainingsdaten wurden mit verschiedenen Augmentierungstechniken aufbereitet:
 
 Für kontinuierliche Sicherheitsüberprüfungen wird Bandit eingesetzt, ein auf Python spezialisiertes Security-Scanning-Tool. Die Integration erfolgt über GitHub Actions:
 
-\begin{lstlisting}[language= Bash, caption=Security Scan Workflow]
+\begin{lstlisting}[language= Bash]
 name: Security Scan
 on:
   push:
@@ -142,18 +142,14 @@ jobs:
       - run: bandit -r . --skip trojansource
 \end{lstlisting}
 
-Bandit analysiert den Code auf Sicherheitsprobleme wie:
-\begin{itemize}
-    \item Injektionsanfälligkeiten
-    \item Hartcodierte Credentials
-    \item Unsichere Funktionsaufrufe
-\end{itemize}
+Bandit analysiert den Code auf Sicherheitsprobleme wie Injektionsanfälligkeiten, Hartcodierte Credentials und Unsichere Funktionsaufrufe
+
 
 \section{Codequalität mit Pylint}
 
 Zur Sicherstellung konsistenter Codequalität wird Pylint als statisches Analysetool eingesetzt:
 
-\begin{lstlisting}[language= Bash, caption=Pylint Workflow]
+\begin{lstlisting}[language= Bash]
 name: Pylint
 on: [push]
 jobs:
@@ -232,19 +228,5 @@ Das Projekt unterstützt verschiedene Deploymentstrategien:
     \item Container-basiertes Deployment für Produktion
     \item Versionierte Releases mit automatischen Updates
 \end{itemize}
-
-\chapter{Fazit}
-
-Die Implementierung des WeedDetector-Projekts demonstriert die erfolgreiche Integration moderner Softwareentwicklungspraktiken:
-
-\begin{itemize}
-    \item MVC-Architektur für strukturierte Komponentenorganisation
-    \item YOLO-basierte Objekterkennung für präzise Unkrautidentifikation
-    \item Automatisierte Sicherheits- und Codequalitätsprüfungen
-    \item Containerisierung für plattformübergreifende Kompatibilität
-    \item CI/CD-Pipeline für kontinuierliche Integration und Deployment
-\end{itemize}
-
-Diese Kombination ermöglicht eine robuste, wartbare und sichere Anwendung für die Unkrauterkennung mit minimalen Ressourcenanforderungen und hoher Erkennungsgenauigkeit.
 
 \end{document}

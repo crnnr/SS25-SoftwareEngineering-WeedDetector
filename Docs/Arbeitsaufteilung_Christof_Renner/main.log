@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.3.25)  23 JUN 2025 20:12
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.3.25)  24 JUN 2025 20:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -859,28 +859,20 @@ File: lstlang1.sty 2024/09/23 1.10c listings language file
 [5
 
 ]
-
-[6]
 chapter 4.
 
-Overfull \hbox (9.7386pt too wide) in paragraph at lines 196--197
+Overfull \hbox (9.7386pt too wide) in paragraph at lines 192--193
 []\OT1/cmr/m/n/12 Der Con-tainer um-fasst die Python-Laufzeitumgebung, YOLO- un
 d OpenCV-Bibliotheken
  []
 
 
 
-[7
+[6
 
 ]
 
-[8]
-chapter 5.
-
-
-[9
-
-] (./main.aux)
+[7] (./main.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -889,10 +881,10 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 27286 strings out of 475171
- 538149 string characters out of 5767095
- 1404550 words of memory out of 5000000
- 49791 multiletter control sequences out of 15000+600000
+ 27282 strings out of 475171
+ 538095 string characters out of 5767095
+ 1404454 words of memory out of 5000000
+ 49790 multiletter control sequences out of 15000+600000
  564945 words of font info for 57 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  108i,8n,107p,10942b,1993s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -904,10 +896,10 @@ sbx10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></us
 r/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/share/texmf-
 dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf-dist/fonts/type
 1/public/cm-super/sftt1000.pfb>
-Output written on main.pdf (9 pages, 122784 bytes).
+Output written on main.pdf (7 pages, 120350 bytes).
 PDF statistics:
- 246 PDF objects out of 1000 (max. 8388607)
- 214 compressed objects within 3 object streams
- 97 named destinations out of 1000 (max. 500000)
- 93 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 232 PDF objects out of 1000 (max. 8388607)
+ 202 compressed objects within 3 object streams
+ 94 named destinations out of 1000 (max. 500000)
+ 85 words of extra memory for PDF output out of 10000 (max. 10000000)
 
