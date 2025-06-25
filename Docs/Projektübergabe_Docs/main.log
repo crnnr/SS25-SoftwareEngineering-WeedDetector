@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.3.25)  25 JUN 2025 11:37
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.3.25)  25 JUN 2025 13:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -860,59 +860,104 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <8> on input line 2.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <6> on input line 2.
-)
+
+
+[2
+
+])
 \tf@toc=\write5
 \openout5 = `main.toc'.
 
 
 
-[2
-
-]
+[3]
 chapter 1.
 
-Overfull \hbox (11.47978pt too wide) in paragraph at lines 63--64
-\OT1/cmr/m/n/12 Die WeedDetector-Anwendung basiert auf dem Model-View-Controlle
-r Model. Die Entschei-
+Overfull \hbox (10.37242pt too wide) in paragraph at lines 90--90
+ []\OT1/cmr/m/n/12 WeedDetectorController 
  []
 
 
-Overfull \hbox (11.92546pt too wide) in paragraph at lines 70--71
-[]\OT1/cmr/bx/n/12 Ereignisgesteuerte Kom-mu-nika-tion: \OT1/cmr/m/n/12 Ver-mit
--telt zwis-chen GUI-Events und Model-
- []
-
-(/usr/share/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2024/09/23 1.10c listings language file
-)
-Overfull \hbox (2.98013pt too wide) in paragraph at lines 103--103
- [][]\OT1/cmr/m/n/12 Requests 
+Overfull \hbox (22.94034pt too wide) in paragraph at lines 90--90
+ []\OT1/cmr/m/n/12 Komponentenkoordination 
  []
 
 
+Overfull \hbox (18.78525pt too wide) in paragraph at lines 97--97
+ [][]\OT1/cmr/m/n/12 Benutzeraktionen 
+ []
 
-[3
 
-{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
-chapter 2.
+Overfull \hbox (24.66019pt too wide) in paragraph at lines 98--98
+ []\OT1/cmr/m/n/12 Datenverarbeitung 
+ []
+
+
+Overfull \hbox (40.52252pt too wide) in paragraph at lines 99--99
+ [][]\OT1/cmr/m/n/12 Erkennungsergebnisse 
+ []
+
+
+Overfull \hbox (3.9979pt too wide) in paragraph at lines 100--100
+ \OT1/cmr/m/n/12 Aktualisierung 
+ []
+
+
+Overfull \hbox (1.78264pt too wide) in paragraph at lines 102--102
+ [][]\OT1/cmr/m/n/12 Statusupdates 
+ []
+
+
+Overfull \hbox (27.95346pt too wide) in paragraph at lines 105--106
+ [][] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Overfull \hbox (2.05563pt too wide) in paragraph at lines 126--127
+[]\OT1/cmr/bx/n/12 Kontinuierliche In-te-gra-tion: \OT1/cmr/m/n/12 GitHub Ac-ti
+ons f^^?ur au-toma-tisierte Tests und Builds 
+ []
+
 
 
 [4
 
+{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
+
+[5]
+chapter 2.
+
+Overfull \hbox (21.85886pt too wide) in paragraph at lines 156--157
+\OT1/cmr/m/n/12 of-fiziellen An-leitung f^^?ur Ihr Be-trieb-ssys-tem ([]$\OT1/c
+mtt/m/n/12 https : / / docs . docker . com / get-[]docker/$[]\OT1/cmr/m/n/12 ).
+ 
+ []
+
+(/usr/share/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2024/09/23 1.10c listings language file
+)
+(/usr/share/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2024/09/23 1.10c listings language file
+)
+
+[6
+
 ]
+
+[7]
 chapter 3.
-(/usr/share/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2024/09/23 1.10c listings language file
-)
-(/usr/share/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2024/09/23 1.10c listings language file
-)
 
-[5
+
+[8
 
 ]
 
-[6] (./main.aux)
+[9]
+
+[10] (./main.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -921,24 +966,98 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 27364 strings out of 475171
- 540112 string characters out of 5767095
- 1342613 words of memory out of 5000000
- 49889 multiletter control sequences out of 15000+600000
- 565244 words of font info for 58 fonts, out of 8000000 for 9000
+ 27362 strings out of 475171
+ 540669 string characters out of 5767095
+ 1285606 words of memory out of 5000000
+ 49870 multiletter control sequences out of 15000+600000
+ 565838 words of font info for 60 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 108i,8n,107p,10934b,1289s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/font
-s/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmr17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cms
-sbx10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></us
-r/share/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf-d
-ist/fonts/type1/public/cm-super/sftt1000.pfb>
-Output written on main.pdf (6 pages, 119383 bytes).
+ 108i,8n,107p,10934b,1348s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+pdfTeX warning (dest): name{section.6.3} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{section.6.2} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{section.6.1} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{chapter.6} has been referenced but does not exist, 
+replaced by a fixed one
+
+
+pdfTeX warning (dest): name{section.5.3} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{section.5.2} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{section.5.1} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{chapter.5} has been referenced but does not exist, 
+replaced by a fixed one
+
+
+pdfTeX warning (dest): name{section.4.4} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.4.3.2} has been referenced but does not 
+exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.4.3.1} has been referenced but does not 
+exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{section.4.3} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.4.2.1} has been referenced but does not 
+exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{section.4.2} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.4.1.2} has been referenced but does not 
+exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.4.1.1} has been referenced but does not 
+exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{section.4.1} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{chapter.4} has been referenced but does not exist, 
+replaced by a fixed one
+
+</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmr17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmssb
+x10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/
+share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/share/texmf-dist/fonts/type1
+/public/cm-super/sfrm1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-supe
+r/sftt1000.pfb>
+Output written on main.pdf (10 pages, 154926 bytes).
 PDF statistics:
- 221 PDF objects out of 1000 (max. 8388607)
- 195 compressed objects within 2 object streams
- 77 named destinations out of 1000 (max. 500000)
- 125 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 319 PDF objects out of 1000 (max. 8388607)
+ 284 compressed objects within 3 object streams
+ 96 named destinations out of 1000 (max. 500000)
+ 189 words of extra memory for PDF output out of 10000 (max. 10000000)
 

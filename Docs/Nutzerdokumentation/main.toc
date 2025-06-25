@@ -1,0 +1,17 @@
+\contentsline {chapter}{\numberline {1}Einführung und Projektübersicht}{3}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Motivation und Zielsetzung}{3}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Technologiestack}{3}{section.1.2}%
+\contentsline {chapter}{\numberline {2}Installation}{4}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Installation mittels Docker (macOS und Linux)}{4}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Manuelles Setup unter Windows}{4}{section.2.2}%
+\contentsline {chapter}{\numberline {3}Benutzerhandbuch}{5}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Benutzeroberfläche}{5}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Hauptfunktionen}{6}{subsection.3.1.1}%
+\contentsline {section}{\numberline {3.2}Grundlegende Bedienung}{6}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Einzelbildanalyse}{6}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Live-Kameraerkennung}{6}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Robotersteuerung}{7}{subsection.3.2.3}%
+\contentsline {section}{\numberline {3.3}Erweiterte Funktionen}{7}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Anpassung der Erkennungsparameter}{7}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Interpretation der Erkennungsergebnisse}{7}{subsection.3.3.2}%
+\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 
