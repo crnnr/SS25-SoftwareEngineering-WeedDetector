@@ -1,0 +1,216 @@
+\documentclass[12pt]{scrartcl}
+
+% Define variables
+\newcommand{\faculty}{Faculty Applied Information Technology}
+\newcommand{\studies}{Bachelor of Cyber-Security}
+\newcommand{\thesistitleDE}{Software Engineering}
+\newcommand{\thesistitleEN}{Übersicht der Arbeitsaufteilung}
+\newcommand{\degree}{Bachelor of Science (B.Sc.)}
+\newcommand{\student}{Max Mustermann}
+\newcommand{\matrnr}{123456}
+\newcommand{\stammnr}{78910}
+\newcommand{\submissiondate}{25. Januar 2025}
+\newcommand{\supervisor}{Prof. Dr. Holger Jehle}
+\newcommand{\shaded}[1]{\cellcolor{gray!30} #1}
+
+
+\usepackage{pgfplots}
+\usepackage{listings} % For code formatting
+\usepackage{xcolor}   % For coloring code
+\usepackage{tikz}
+\usetikzlibrary{shadows,positioning}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+% Required for hyperlinks
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{amssymb}
+\usepackage[table,xcdraw]{xcolor} 
+\usepackage{longtable} 
+\usepackage{booktabs}
+\hypersetup{hidelinks,
+backref=true,
+pagebackref=true,
+hyperindex=true,
+breaklinks=true,
+colorlinks=false,
+urlcolor=blue,
+bookmarks=true,
+bookmarksopen=false,
+pdftitle={Title},
+pdfauthor={Author}}
+
+% Define colors for code listing
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% Code listing style named "mystyle"
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+% Set KOMA-Script fonts for title and other elements
+\setkomafont{title}{\huge\scshape}
+\setkomafont{subject}{\large\scshape}
+\setkomafont{publishers}{\large}
+\setkomafont{author}{\normalsize}
+
+\begin{document}
+
+\begin{titlepage}
+\begin{center}
+    % University and Faculty
+    {\usekomafont{subject}%
+    Technische Hochschule Deggendorf\\
+    \faculty\par}
+    \vspace{.2cm}
+    
+    % Degree Program
+    {\Large Studiengang \studies\\}
+    \vspace{2\baselineskip}
+    
+    % Thesis Titles
+    {\Huge\usekomafont{title}\thesistitleDE\par}
+    \vspace{1cm}
+    {\Huge\usekomafont{title}\thesistitleEN\par}
+    \vspace{3\baselineskip}
+    
+\end{center}
+\end{titlepage}
+\cleardoublepage
+\tableofcontents
+\newpage
+\section{Einleitung}
+Im Rahmen des Kurses \textbf{Software Engineering} wurde die Aufgabe gestellt, einen Weed Detector zu entwickeln, der Unkraut in landwirtschaftlichen Flächen automatisch erkennen kann. Ziel dieses Projekts ist es, praxisnah die im Kurs erlernten Methoden zur Planung, Umsetzung und Dokumentation eines Softwareprojekts anzuwenden.\\
+\\
+Das Projekt wird im Team durchgeführt, bestehend aus Christof Renner und Manuel Friedl. In diesem Dokument wird die Arbeitsaufteilung im Team detailliert beschrieben, um die Zuständigkeiten, den individuellen Beitrag und die Arbeitsschritte jedes Teammitglieds transparent darzustellen. Dadurch wird eine nachvollziehbare Grundlage geschaffen, die sowohl die Organisation innerhalb des Teams als auch die spätere Evaluierung der einzelnen Arbeitspakete unterstützt.
+\section{Arbeitsaufteilung}
+\begin{tabular}{|>{\columncolor{gray!30}}p{8cm}|>{\centering\arraybackslash}p{2cm}|>{\centering\arraybackslash}p{2cm}|}
+\hline
+\rowcolor{gray!30}
+\textbf{Beteiligte} & \textbf{Manuel} & \textbf{Christof} \\
+\hline
+Model und Modeltraining & 20\% & 80\% \\ 
+\hline
+Docker-Container & -- & 100\%\\
+\hline
+GUI & 80\% & 20\% \\ 
+\hline
+Roboter u. Navigation & 100\% & -- \\
+\hline
+Refactor Codebase (MVC) & 100\% & -- \\
+\hline
+Security-Scanning & -- & 100\% \\
+\hline
+Tests & 100\% & -- \\
+\hline
+Linting & 50\% & 50\% \\
+\hline
+Deployment (CI/CD-Pipelines) & -- & 100\% \\
+\hline
+Dokumentation erstellen & 50\% & 50\% \\ 
+\hline
+Präsentation erstellen & 50\% & 50\% \\ 
+\hline
+\textbf{Insgesamt:} & \textbf{50\%} & \textbf{50\%} \\
+\hline
+\end{tabular}
+\section{Arbeitspunkte}
+\subsection{Model und Modeltraining}
+Für die Unkrauterkennung wurde das YOLOv8-Modell verwendet, da es eine schnelle und präzise Objekterkennung ermöglicht. Nach der Annotation der Trainingsdaten wurde das Modell trainiert und anhand von mAP, Precision und Recall evaluiert. Das trainierte Modell wurde exportiert und für die Echtzeiterkennung auf der Zielhardware eingesetzt, wodurch eine zuverlässige Unkrauterkennung im Weed Detector erreicht wurde.
+
+\subsection{Docker-Container einrichten}
+Für den Weed Detector wurde ein Docker-Container eingerichtet, um eine einheitliche und portable Ausführungsumgebung bereitzustellen. Darin wurden alle benötigten Abhängigkeiten, das YOLOv8-Modell und die Laufzeitumgebung integriert, sodass das System unabhängig vom Host-System zuverlässig ausgeführt werden kann.\\
+\\
+Der Einsatz von Docker erleichtert die Installation, Wartung und den Transfer des Projekts auf andere Geräte und ermöglicht eine konsistente Entwicklungs- und Testumgebung.
+
+\subsection{Graphical User Interface}
+Für den Weed Detector wurde ein Graphical User Interface (GUI) mit \textbf{Tkinter} in Python entwickelt, um die Bedienung des Systems intuitiv und effizient zu gestalten. Die Benutzeroberfläche verfügt über drei Buttons:
+\begin{itemize}
+    \item \textbf{Bilddateien auswählen:} zum Hochladen und Analysieren gespeicherter Bilder
+    \item \textbf{Kamera starten:} zur Live-Erkennung von Unkraut mit der integriertenoder angeschlossenen Kamera
+    \item \textbf{Roboter starten:} zum Aktivieren des Roboters für die automatische Unkrauterkennung und -bearbeitung im Feld/Beet
+\end{itemize}
+Die Ergebnisse der Unkrauterkennung werden dabei direkt im GUI angezeigt, indem erkannte Pflanzen und Unkraut in Echtzeit visualisiert und farblich markiert werden. Dies ermöglicht eine einfache Überwachung des Systems, während gleichzeitig alle notwendigen Steuerungsfunktionen zentral zugänglich bleiben.\\
+\\
+Durch den Einsatz von Tkinter konnte eine leichtgewichtige und plattformunabhängige Lösung realisiert werden, die sich nahtlos in den Arbeitsablauf mit dem Weed Detector integriert.
+
+\subsection{Roboter und Navigation}
+Für den Weed Detector wurde ein simulierter Roboter entwickelt, der in einer vordefinierten Strecke fährt, um den praktischen Einsatz eines autonomen Unkrautbekämpfungssystems zu demonstrieren. Der Roboter bewegt sich dabei automatisch innerhalb der festgelegten Route und nutzt das integrierte Kamerabild, um in Echtzeit Unkraut zu erkennen.\\
+\\
+Wird während der Fahrt Unkraut detektiert, steuert der Roboter einen simulierten Roboterarm an, an dem eine Spritze mit Unkrautbekämpfungsmittel befestigt ist. Diese „spritzt“ gezielt auf die erkannten Unkräuter, um eine punktgenaue Bekämpfung zu zeigen und den Einsatz von Herbiziden möglichst effizient darzustellen.\\
+\\
+Die Navigation des Roboters, die Erkennung und die gezielte Ausführung der Sprühvorgänge laufen automatisiert ab und werden über das GUI gestartet und überwacht. So kann die komplette Prozesskette — von der Erkennung bis zur Bekämpfung — in einer sicheren Demo-Umgebung getestet und veranschaulicht werden.
+
+\subsection{Refactor Codebase (MVC)}
+m Verlauf des Projekts wurde die Codebase des Weed Detectors nach dem MVC-Designpattern (Model-View-Controller) refaktoriert, um Struktur und Wartbarkeit des Codes zu verbessern.
+\begin{itemize}
+    \item \textbf{Model:} Beinhaltet die Logik zur Unkrauterkennung mit YOLOv8 sowie die Datenverarbeitung und Ergebnisverwaltung.
+    \item \textbf{View:} Wird durch das mit Tkinter erstellte GUI repräsentiert, das die Benutzerinteraktion und Visualisierung der Erkennungsergebnisse übernimmt.
+    \item \textbf{Controller:} Verknüpft die GUI mit der Erkennungs- und Steuerungslogik und steuert die Abläufe wie Bildauswahl, Kamerasteuerung und Roboterstart.
+\end{itemize}
+Durch diese Trennung wurden die Zuständigkeiten im Code klar abgegrenzt, wodurch Änderungen an der Oberfläche, der Erkennung oder der Steuerung unabhängig voneinander durchgeführt werden können. Zudem erleichtert die Struktur die Erweiterung um neue Funktionen und verbessert die Übersichtlichkeit für künftige Arbeiten am Weed Detector.
+
+\subsection{Security-Scanning}
+Zur Verbesserung der Codequalität und Sicherheit wurde für den Weed Detector \textbf{Bandit} eingesetzt, ein Tool zur statischen Analyse von Python-Code auf Sicherheitslücken.\\
+\\
+Bandit überprüfte die Codebase automatisiert auf potenzielle Schwachstellen wie unsichere Funktionen, fehlerhafte Verwendung von Bibliotheken oder mögliche Angriffspunkte im Umgang mit Dateipfaden und Benutzereingaben.\\
+\\
+Durch den Einsatz von Bandit konnten Sicherheitsrisiken frühzeitig erkannt und behoben werden, wodurch die Stabilität und Sicherheit des Weed Detectors für den praktischen Einsatz erhöht wurde.
+
+\subsection{Unit-, Integration und Systemtests}
+Zur Sicherstellung der Funktionalität und Stabilität des Weed Detectors wurden Unit-, Integrations- und Systemtests durchgeführt.
+\begin{itemize}
+    \item \textbf{Unit-Tests:} Einzelne Funktionen, wie Bildvorverarbeitung, Ergebnisinterpretation und Kamerazugriff, wurden isoliert getestet, um sicherzustellen, dass sie erwartungsgemäß arbeiten.
+    \item \textbf{Integrationstests:} Die Zusammenarbeit zwischen YOLOv8-Modell, GUI und Steuerungslogik wurde getestet, um sicherzustellen, dass Daten korrekt übergeben und verarbeitet werden.
+    \item \textbf{Systemtest:} Der gesamte Ablauf vom Starten des Weed Detectors über die Erkennung bis hin zur (simulierten) Unkrautbekämpfung mit dem Roboter wurde in einer realitätsnahen Umgebung geprüft.
+\end{itemize}
+Durch diese Tests konnte eine hohe Zuverlässigkeit und Nachvollziehbarkeit des Gesamtsystems erreicht und sichergestellt werden, dass Änderungen an einzelnen Modulen keine unerwarteten Fehler im Gesamtsystem verursachen.
+
+\subsection{Linting}
+Zur Verbesserung der Codequalität und Lesbarkeit wurde im Projekt \textbf{Pylint} eingesetzt. Pylint überprüfte den gesamten Python-Code auf \textbf{Syntaxfehler, Stilrichtlinien und potenzielle Programmierfehler} und gab Hinweise zur Optimierung der Struktur und Namenskonventionen.\\
+\\
+Durch die Nutzung von Pylint konnte der Code \textbf{vereinheitlicht, unnötige Komplexität reduziert und die Wartbarkeit erhöht} werden. Zudem wurde sichergestellt, dass der Weed Detector den \textbf{PEP8-Standards} entspricht, was die langfristige Erweiterung und Übergabe an andere Entwickler erleichtert.
+
+\subsection{Deployment (CI/CD-Pipelines)}
+Für den Weed Detector wurde eine \textbf{Continuous Integration/Continuous Deployment (CI/CD) Pipeline} eingerichtet, um eine automatisierte und konsistente Auslieferung des Projekts zu ermöglichen.\\
+\\
+Die Pipeline führt \textbf{automatisch Linting, Security-Scanning mit Bandit sowie Unit- und Integrationstests} bei jedem Push in das Repository durch, um Fehler frühzeitig zu erkennen. Nach erfolgreichem Durchlauf wird automatisch ein \textbf{Docker-Image erstellt und für den Einsatz auf der Zielhardware bereitgestellt}, wodurch die manuelle Einrichtung entfällt und die Deployment-Zeit verkürzt wird.\\
+\\
+Durch den Einsatz von CI/CD konnte der \textbf{Entwicklungs- und Release-Prozess effizienter, zuverlässiger und reproduzierbar gestaltet werden}, wodurch der Weed Detector stabil und einsatzbereit gehalten wird.
+
+\subsection{Dokumentation erstellen}
+Zur Sicherstellung der \textbf{Nachvollziehbarkeit und Wartbarkeit} des Weed Detectors wurde eine umfassende Dokumentation erstellt. Diese umfasst die Projektstruktur, verwendete Technologien, Installations- und Nutzungshinweise, sowie die Beschreibung aller Arbeitspakete und deren Umsetzung.\\
+\\
+Neben der technischen Dokumentation wurden auch \textbf{Code-Kommentare und Docstrings} hinzugefügt, um Funktionen und Abläufe im Code klar zu erläutern. Dies erleichtert zukünftigen Entwicklern den Einstieg und ermöglicht eine schnelle Erweiterung oder Anpassung des Systems.\\
+\\
+Die Dokumentation dient zudem als Grundlage für Präsentationen und die Projekteinreichung im Software Engineering Kurs, wodurch die erarbeiteten Ergebnisse strukturiert und verständlich aufbereitet zur Verfügung stehen.
+
+\subsection{Präsentation erstellen}
+Zum Abschluss des Projekts wurde eine Präsentation erstellt, um den Weed Detector und die erarbeiteten Ergebnisse im Rahmen des Software Engineering Kurses vorzustellen.\\
+\\
+Die Präsentation enthält eine übersichtliche Darstellung der Projektziele, des technischen Aufbaus, der verwendeten Technologien und der wichtigsten Arbeitsschritte. Zudem werden die Funktionalität des Weed Detectors und die Ergebnisse der Unkrauterkennung anhand von Screenshots und Codeausschnitten anschaulich präsentiert.
+\\
+Durch die strukturierte Aufbereitung wird der Entwicklungsprozess nachvollziehbar erklärt, und der Mehrwert des Systems für den Anwendungsfall prägnant und verständlich vermittelt.
+\end{document}
+
