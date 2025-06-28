@@ -49,6 +49,15 @@ class TestRobot(unittest.TestCase):
         self.robot.drive_loop()
         self.mock_gui.log_robot_action.assert_any_call("Failed to read from camera")
         self.assertFalse(self.robot.is_running)
+    
+    @patch("time.sleep", return_value=None)
+    def test_eliminate_weeds_logs_actions(self, _):
+        """Tests the eliminate_weeds method logs the correct actions."""
+        x_coord, y_coord = 100, 200
+        self.robot.eliminate_weeds(x_coord, y_coord)
+        self.mock_gui.log_robot_action.assert_any_call(f"Roboter arm is moving to ({x_coord}, {y_coord})")
+        self.mock_gui.log_robot_action.assert_any_call("Eliminating weed...")
+        self.mock_gui.log_robot_action.assert_any_call("Weed eliminated.")
 
 if __name__ == "__main__":
     unittest.main()

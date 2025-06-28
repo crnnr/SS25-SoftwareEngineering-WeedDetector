@@ -1,4 +1,4 @@
-""" Controller for a automation robot or that can be controled via the gui."""
+""" Controller for a automation robot or that can be controlled via the gui."""
 import threading
 import time
 
@@ -9,10 +9,6 @@ class Robot:
         self.model = model
         self.is_running = False
         self.thread = None
-
-        # Set up GUI callbacks
-        self.gui.on_start_robot = self.start_robot
-        self.gui.on_stop_robot = self.stop_robot
 
     def start_robot(self):
         """Start the robot."""
@@ -25,7 +21,7 @@ class Robot:
     def stop_robot(self):
         """Stop the robot."""
         self.is_running = False
-        # Nur joinen, wenn wir NICHT im Robot-Thread sind
+        # only join the thread if it is alive and not the current thread
         if self.thread and self.thread.is_alive() and threading.current_thread() != self.thread:
             self.thread.join()
         self.gui.toggle_camera()
@@ -43,12 +39,26 @@ class Robot:
                 break
 
             # Simulate processing the frame
-            processed_image, result = self.model.detect_weeds(frame)
+            processed_image, result, weed_coords = self.model.detect_weeds(frame)
             self.gui.display_image(processed_image)
             self.gui.update_results(result)
 
-            if "weed" in result.lower():
-                self.gui.log_robot_action("Weed detected, stopping robot.")
-                self.stop_robot()
+            if "weed" in result.lower() and weed_coords:
+                self.gui.log_robot_action("Weed detected, wait for robot to eliminate weeds...")
+                for x, y in weed_coords:
+                    self.eliminate_weeds(x, y)
                 break
             time.sleep(0.5)
+
+    def eliminate_weeds(self, x_coord=None, y_coord=None):
+        """Eliminate detected weeds."""
+        if x_coord is not None and y_coord is not None:
+            self.gui.log_robot_action(f"Roboter arm is moving to ({x_coord}, {y_coord})")
+            time.sleep(1) # Simulate moving to the weed coordinates
+            self.gui.log_robot_action("Eliminating weed...")
+            time.sleep(1)
+            self.gui.log_robot_action("Weed eliminated.")
+        else:
+            self.gui.log_robot_action("No weed coordinates provided, cannot eliminate weeds.")
+
+
