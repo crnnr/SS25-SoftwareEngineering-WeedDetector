@@ -60,7 +60,7 @@
 
 \chapter{Implementierung des Controllers}
 
-Die WeedDetector-Anwendung basiert auf dem Model-View-Controller Model. Die Entscheidung für MVC fiel aufgrund etablierter Industry Standards und erhöht somit Wartbarkeit, Erweiterbarkeit und Testbarkeit der Software.
+Die WeedDetector-Anwendung basiert auf dem Model-View-Controller Modell. Die Entscheidung für MVC fiel aufgrund etablierter Industry Standards und erhöht somit Wartbarkeit, Erweiterbarkeit und Testbarkeit der Software.
 
 \section{Zentrale Aufgaben des Controllers}
 
@@ -116,7 +116,7 @@ self.gui.on_stop_robot = self.handle_stop_robot
 Das verwendete YOLO-Modell wurde aufgrund seiner ausgewogenen Balance zwischen Geschwindigkeit und Genauigkeit gewählt. Es eignet sich hervorragend zur Echtzeiterkennung verschiedener Unkrautarten.
 
 \section{Datasetbeschreibung}
-Die Trainingsdaten umfassen 13.349 Bilder, exportiert über Roboflow im YOLO-Format (640×640 Pixel). Die augementierung wurde über die Online-Plattform "Roboflow" augmentiert und wurden lokal trainiert.
+Die Trainingsdaten umfassen 13.349 Bilder, exportiert über Roboflow im YOLO-Format (640×640 Pixel). Die Augmentierung wurde über die Online-Plattform "Roboflow" durchgeführt und die Bilder anschließend lokal trainiert.
 
 \section{Vorverarbeitungsschritte}
 Folgende Vorverarbeitungsschritte wurden durchgeführt:
@@ -139,7 +139,7 @@ Zur Verbesserung der Generalisierung wurden umfangreiche Augmentierungen vorgeno
 \chapter{Security und Linting}
 
 \section{Statische Codeanalyse}
-Wir setzen im Bereich Security auf statische Codeanalyse, dabei verwenden wir zur Analyse zum einen "Bandit" und "snyk" verwendet. Die Entscheidung wurde dabei von bisherigen Erfahrung und der weiten Verbreitung der Tools, grade im Pythonumfeld getätigt.
+Wir setzen im Bereich Security auf statische Codeanalyse, dabei verwenden wir zur Analy- se zum einen "Bandit" und "snyk". Die Entscheidung wurde dabei auf Basis von bisherigen Erfahrungen und aufgrund der weiten Verbreitung der Tools, gerade im Pythonumfeld, getätigt.
 
 \begin{lstlisting}[language=Bash, caption=Bandit via GitHub Actions]
 - uses: actions/setup-python@v4
@@ -147,11 +147,11 @@ Wir setzen im Bereich Security auf statische Codeanalyse, dabei verwenden wir zu
 - run: pip install bandit
 - run: bandit -r . --skip trojansource
 \end{lstlisting}
-
+\noindent
 Ergebnisse werden automatisiert bereitgestellt und im Falle von Auffälligkeiten als Issues behandelt.
 
 \section{Python Linting}
-Pylint analysiert kontinuierlich den Python-Code und prüft dabei auf Codequalität, Wartbarkeit, Fehleranfälligkeit und Einhaltung der PEP8-Konventionen. Auch wenn Linter nicht direkt Securityrelevant sind, stellen wir so sicher, dass sauberer, strukturierter Code produziert wird.
+Pylint analysiert kontinuierlich den Python-Code und prüft dabei auf Codequalität, Wartbarkeit, Fehleranfälligkeit und Einhaltung der PEP8-Konventionen. Auch wenn Linter nicht direkt securityrelevant sind, stellen wir so sicher, dass sauberer, strukturierter Code produziert wird.
 
 \begin{lstlisting}[language=Bash, caption=Pylint Integration]
 - uses: actions/setup-python@v5
@@ -171,7 +171,7 @@ Neben Python haben wir auch die Dockerfile mit Hadolint geprüft, um Best-Practi
 \newpage
 
 \section{Dependency Management}
-Für unser Dependency-Management haben wir uns aus der nativen github "All-in-One"-Lösung "dependabot" bedient, damit decken wir in alle dependencies über Docker, Python und Github Actions alles automatisiert ab.
+Für unser Dependency Management haben wir uns aus der nativen GitHub "All-in-One"-Lösung "dependabot" bedient, damit decken wir in alle dependencies über Docker, Python und GitHub Actions alles automatisiert ab.
 
 \begin{lstlisting}[language=Bash, caption=Bandit via GitHub Actions]
 version: 2
@@ -205,7 +205,7 @@ updates:
 \end{lstlisting}
 
 \section{Deployment}
-Das Deployment des Dockerimages erfolgt über eine Github action bei jedem Update der Dockerfile in the Docker registry. Dort wird in der Pipeline jeweils ein lintprozess und ein Build-Prozess ausgeführt, somit wird verifiziert, dass sich der Container in einem optimalen Zustand für jeden Release befindet.
+Das Deployment des Dockerimages erfolgt über eine GitHub Action bei jedem Update der Dockerfile in die Docker registry. Dort wird in der Pipeline jeweils ein Lint-Prozess und ein Build-Prozess ausgeführt, somit wird verifiziert, dass sich der Container in einem optimalen Zustand für jeden Release befindet.
 
 \begin{lstlisting}[language=Bash, caption=Bandit via GitHub Actions]
       - name: Build and push Docker image
@@ -215,6 +215,5 @@ Das Deployment des Dockerimages erfolgt über eine Github action bei jedem Updat
           push: true
           tags: crnnr/weeddetector:latest
 \end{lstlisting}
-
 
 \end{document}
