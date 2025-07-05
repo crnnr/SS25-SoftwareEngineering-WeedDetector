@@ -98,7 +98,7 @@ Der WeedDetector folgt dem Model-View-Controller (MVC) Architekturmuster, um ein
     \draw[arrow] (controller) -- node[above, text width=2.5cm, align=center] {Anfragen\\Datenverarbeitung} (model);
     \draw[arrow] (model) to[bend left=25] node[below, text width=2.5cm, align=center] {Erkennungsergebnisse} (controller);
     \draw[arrow] (controller) to[bend left=25] node[below, text width=2.5cm, align=center] {UI-Aktualisierung} (gui);
-    \draw[arrow] (controller) -- node[right, text width=2.5cm, align=center] {Steuerbefehle} (robot);
+    \draw[arrow] (controller) -- node[right, text width=2.5cm, align=center] {} (robot);
     \draw[arrow] (robot) to[bend right=25] node[left, text width=2.5cm, align=center] {Statusupdates} (controller);
     \draw[arrow] (robot) to[bend right=35] node[below, text width=3.5cm, align=center] {Bildaufnahme\\Aktionsmeldungen} (gui);
 
@@ -136,15 +136,14 @@ Für den erfolgreichen Betrieb des WeedDetector-Systems werden folgende Mindests
     \begin{itemize}
         \item CPU: Quad-Core Prozessor, 2.5 GHz oder höher
         \item RAM: Mindestens 8 GB (16 GB empfohlen)
-        \item Grafikkarte: CUDA-fähige GPU mit mindestens 4 GB VRAM für optimale Leistung
-        \item Festplattenspeicher: Mindestens 2 GB freier Speicherplatz
+        \item Grafikkarte: GPU mit mindestens 4 GB VRAM für optimale Leistung
+        \item Festplattenspeicher: Mindestens 10 GB freier Speicherplatz
         \item Kamera: USB-Webcam oder integrierte Kamera für Live-Erkennung
     \end{itemize}
     \item \textbf{Software:}
     \begin{itemize}
         \item Betriebssystem: Linux (Ubuntu 22.04 LTS empfohlen), Windows 10/11 oder macOS
         \item Docker: Version 24.0 oder höher
-        \item X11-Server (für GUI-Anzeige aus dem Container)
     \end{itemize}
 \end{itemize}
 
@@ -172,8 +171,8 @@ Die Installation des WeedDetector-Systems erfolgt primär über Docker, um eine 
     \end{lstlisting}
 \end{enumerate}
 
-\subsection{Manuelle Installation (ohne Docker)}
-Für Entwicklungs- oder Testzwecke kann das System auch manuell installiert werden:
+\subsection{Manuelle Installation für Windows (ohne Docker)}
+Für Entwicklungs- oder Testzwecke unter Windows muss das System über Python direkt:
 
 \begin{enumerate}
     \item \textbf{Python-Umgebung einrichten:}
@@ -197,7 +196,7 @@ Für Entwicklungs- oder Testzwecke kann das System auch manuell installiert werd
 Der WeedDetector bietet verschiedene Konfigurationsmöglichkeiten, um das System an spezifische Anforderungen anzupassen:
 
 \subsection{Modellkonfiguration}
-Die Standardkonfiguration verwendet ein vortrainiertes YOLOv8-Modell. Das System sucht automatisch nach trainierten Modellen in folgenden Pfaden:
+Die Standardkonfiguration verwendet ein vortrainiertes YOLO-Modell. Das System sucht automatisch nach trainierten Modellen in folgenden Pfaden:
 \begin{itemize}
     \item \texttt{runs/detect\_train/weights/best.pt}
     \item \texttt{data/weights/best.pt}
@@ -205,7 +204,7 @@ Die Standardkonfiguration verwendet ein vortrainiertes YOLOv8-Modell. Das System
     \item \texttt{models/best.pt}
 \end{itemize}
 
-Wenn kein benutzerdefiniertes Modell gefunden wird, wird auf das Standard-YOLOv8-Modell zurückgegriffen.
+Wenn kein benutzerdefiniertes Modell gefunden wird, wird auf das Standard-YOLO-Modell zurückgegriffen.
 
 \subsection{Umgebungsvariablen}
 Folgende Umgebungsvariablen können beim Start des Docker-Containers konfiguriert werden:
