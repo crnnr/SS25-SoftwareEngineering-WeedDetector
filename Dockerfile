@@ -1,4 +1,4 @@
-FROM python:3.13-slim AS builder
+FROM python:3.13.7-slim AS builder
 
 WORKDIR /wheels
 
@@ -8,7 +8,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     pip install --upgrade pip==25.1.1 --no-cache-dir \
  && pip wheel --no-cache-dir --wheel-dir . -r requirements.txt
 
-FROM python:3.13-slim AS runtime
+FROM python:3.13.7-slim AS runtime
 
 WORKDIR /app
 
